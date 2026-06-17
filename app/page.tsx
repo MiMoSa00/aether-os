@@ -126,8 +126,8 @@ export default function LandingPage() {
           </div>
 
           <h1 className={styles.title}>
-            Run Your Entire Agency{' '}
-            <span className={styles.gradientText}>From One Place</span>
+            Your Agency's{' '}
+            <span className={styles.gradientText}>Neural</span> Core
           </h1>
 
           <p className={styles.description}>

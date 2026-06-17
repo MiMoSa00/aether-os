@@ -3,7 +3,7 @@
 import React from 'react';
 import { Logo } from '@/components/Logo/Logo';
 import styles from './Sidebar.module.css';
-import { LayoutDashboard, FolderKanban, FileText, Users, Bot, X, CreditCard, Shield, LogOut } from 'lucide-react';
+import { LayoutDashboard, FolderKanban, FileText, Users, Bot, X, CreditCard, Shield, LogOut, TrendingUp, BarChart3, Clock, FilePlus, Wallet } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useData } from '@/context/DataContext';
@@ -12,8 +12,13 @@ import { createClient } from '@/utils/supabase/client';
 const navItems = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { name: 'Tasks', href: '/tasks', icon: FolderKanban },
-  { name: 'Invoices', href: '/invoices', icon: FileText },
   { name: 'Clients', href: '/clients', icon: Users },
+  { name: 'Invoices', href: '/invoices', icon: FileText },
+  { name: 'Finance', href: '/finance', icon: TrendingUp },
+  { name: 'Proposals', href: '/proposals', icon: FilePlus },
+  { name: 'Time Tracking', href: '/time-tracking', icon: Clock },
+  { name: 'Expenses', href: '/expenses', icon: Wallet },
+  { name: 'Reports', href: '/reports', icon: BarChart3 },
   { name: 'AI Agent', href: '/agent', icon: Bot },
 ];
 
@@ -50,7 +55,7 @@ export function Sidebar({ isOpen, onClose }: { isOpen?: boolean; onClose?: () =>
   const handleLogout = async () => {
     const supabase = createClient();
     await supabase.auth.signOut();
-    router.push('/login');
+    router.push('/');
     router.refresh();
   };
 

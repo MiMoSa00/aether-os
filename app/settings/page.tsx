@@ -4,53 +4,58 @@ import { ModulePage } from '@/components/Layout/ModulePage';
 import { Settings, User, Shield, Zap, LogOut } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
-
+import { useData } from '@/context/DataContext';
 import styles from './settings.module.css';
 
 export default function SettingsPage() {
   const router = useRouter();
+  const { user } = useData();
 
   const handleLogout = async () => {
     const supabase = createClient();
     await supabase.auth.signOut();
-    router.push('/login');
+    router.push('/');
     router.refresh();
   };
 
+  const fullName = user?.user_metadata?.full_name || '—';
+  const email = user?.email || '—';
+  const role = user?.user_metadata?.role || 'Agency Owner';
+
   const sections = [
     {
-      title: 'Neural Identity',
+      title: 'Account Information',
       icon: User,
       items: [
-        { label: 'Agency Name', value: 'Aether Agency' },
-        { label: 'Primary Node Email', value: 'admin@aetheros.ai' },
-        { label: 'Access Level', value: 'Prime Architect' },
+        { label: 'Full Name', value: fullName },
+        { label: 'Email Address', value: email },
+        { label: 'Account Role', value: role },
       ]
     },
     {
-      title: 'Security Protocol',
+      title: 'Security',
       icon: Shield,
       items: [
-        { label: 'Neural Encryption', value: 'AES-256 Active' },
+        { label: 'Data Encryption', value: 'AES-256 Active' },
         { label: 'Two-Factor Authentication', value: 'Enabled' },
-        { label: 'Session Persistence', value: '30 Days' },
+        { label: 'Session Duration', value: '30 Days' },
       ]
     },
     {
-      title: 'A.I. Core Configuration',
+      title: 'AI Configuration',
       icon: Zap,
       items: [
-        { label: 'Language Model', value: 'Claude Sonnet 4.6' },
-        { label: 'Neural Temperature', value: '0.7 (Optimal)' },
+        { label: 'AI Model', value: 'Claude Sonnet 4.6' },
+        { label: 'Response Style', value: 'Balanced (0.7)' },
         { label: 'Context Window', value: '200k Tokens' },
       ]
     }
   ];
 
   return (
-    <ModulePage 
-      title="Settings" 
-      subtitle="Configure your agency's neural parameters and account preferences." 
+    <ModulePage
+      title="Settings"
+      subtitle="Manage your account details and preferences."
       icon={Settings}
     >
       <div className={styles.container}>
@@ -73,7 +78,7 @@ export default function SettingsPage() {
           ))}
 
           <button className={styles.logoutBtn} onClick={handleLogout}>
-            <LogOut size={20} /> Terminate Secure Session
+            <LogOut size={20} /> Log Out
           </button>
         </div>
       </div>

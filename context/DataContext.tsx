@@ -39,12 +39,47 @@ interface Notification {
   created_at: string;
 }
 
+interface TimeEntry {
+  id: string;
+  client: string;
+  description: string;
+  duration: number; // seconds
+  billable: boolean;
+  rate: number; // ₦ per hour
+  date: string;
+}
+
+interface Proposal {
+  id: string;
+  client: string;
+  title: string;
+  scope: string;
+  deliverables: string;
+  timeline: string;
+  price: string;
+  status: 'Draft' | 'Sent' | 'Accepted' | 'Declined';
+  date: string;
+}
+
+interface Expense {
+  id: string;
+  name: string;
+  amount: string;
+  category: 'Software' | 'Travel' | 'Equipment' | 'Marketing' | 'Other';
+  date: string;
+  client: string;
+}
+
 interface DataContextType {
   tasks: Record<string, Task>;
   columns: Record<string, Column>;
   clients: Client[];
   invoices: Invoice[];
   notifications: Notification[];
+  timeEntries: TimeEntry[];
+  proposals: Proposal[];
+  expenses: Expense[];
+  payments: any[];
   user: any;
   addTask: (columnId: string, content: string, priority: 'High' | 'Medium' | 'Low') => void;
   addClient: (name: string, role: string, email: string, phone: string) => void;
@@ -53,6 +88,12 @@ interface DataContextType {
   moveTask: (activeId: string, overId: string) => void;
   markNotificationRead: (id: string) => void;
   addNotification: (title: string, message: string, type: 'info' | 'success' | 'warning') => void;
+  addTimeEntry: (client: string, description: string, duration: number, billable: boolean, rate: number) => void;
+  deleteTimeEntry: (id: string) => void;
+  addProposal: (client: string, title: string, scope: string, deliverables: string, timeline: string, price: string) => Promise<string>;
+  updateProposalStatus: (id: string, status: Proposal['status']) => void;
+  addExpense: (name: string, amount: string, category: Expense['category'], client: string) => void;
+  deleteExpense: (id: string) => void;
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
@@ -70,6 +111,10 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   const [clients, setClients] = useState<Client[]>([]);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [timeEntries, setTimeEntries] = useState<TimeEntry[]>([]);
+  const [proposals, setProposals] = useState<Proposal[]>([]);
+  const [expenses, setExpenses] = useState<Expense[]>([]);
+  const [payments, setPayments] = useState<any[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
   const [user, setUser] = useState<any>(null);
 
@@ -91,12 +136,20 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       const savedClients = localStorage.getItem('aether_clients');
       const savedInvoices = localStorage.getItem('aether_invoices');
       const savedNotifs = localStorage.getItem('aether_notifs');
+      const savedTime = localStorage.getItem('aether_time_entries');
+      const savedProposals = localStorage.getItem('aether_proposals');
+      const savedExpenses = localStorage.getItem('aether_expenses');
+      const savedPayments = localStorage.getItem('aether_payments');
 
       if (savedTasks) setTasks(JSON.parse(savedTasks));
       if (savedCols) setColumns(JSON.parse(savedCols));
       if (savedClients) setClients(JSON.parse(savedClients));
       if (savedInvoices) setInvoices(JSON.parse(savedInvoices));
       if (savedNotifs) setNotifications(JSON.parse(savedNotifs));
+      if (savedTime) setTimeEntries(JSON.parse(savedTime));
+      if (savedProposals) setProposals(JSON.parse(savedProposals));
+      if (savedExpenses) setExpenses(JSON.parse(savedExpenses));
+      if (savedPayments) setPayments(JSON.parse(savedPayments));
     };
 
     const fetchData = async () => {
@@ -146,6 +199,42 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         setNotifications(notifData);
         localStorage.setItem('aether_notifs', JSON.stringify(notifData));
       }
+
+      // Fetch Time Entries
+      try {
+        const { data: timeData } = await supabase.from('time_entries').select('*').eq('user_id', supabaseUser.id);
+        if (timeData) {
+          setTimeEntries(timeData);
+          localStorage.setItem('aether_time_entries', JSON.stringify(timeData));
+        }
+      } catch {}
+
+      // Fetch Proposals
+      try {
+        const { data: proposalData } = await supabase.from('proposals').select('*').eq('user_id', supabaseUser.id);
+        if (proposalData) {
+          setProposals(proposalData);
+          localStorage.setItem('aether_proposals', JSON.stringify(proposalData));
+        }
+      } catch {}
+
+      // Fetch Expenses
+      try {
+        const { data: expenseData } = await supabase.from('expenses').select('*').eq('user_id', supabaseUser.id);
+        if (expenseData) {
+          setExpenses(expenseData);
+          localStorage.setItem('aether_expenses', JSON.stringify(expenseData));
+        }
+      } catch {}
+
+      // Fetch Payments
+      try {
+        const { data: paymentData } = await supabase.from('payments').select('*').eq('user_id', supabaseUser.id);
+        if (paymentData) {
+          setPayments(paymentData);
+          localStorage.setItem('aether_payments', JSON.stringify(paymentData));
+        }
+      } catch {}
       
       setIsLoaded(true);
     };
@@ -298,6 +387,105 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const addTimeEntry = async (client: string, description: string, duration: number, billable: boolean, rate: number) => {
+    if (!user) return;
+    const newEntry: TimeEntry = {
+      id: String(Date.now()),
+      client,
+      description: description || 'Work session',
+      duration,
+      billable,
+      rate,
+      date: new Date().toLocaleDateString('en-NG', { day: 'numeric', month: 'short', year: 'numeric' })
+    };
+    setTimeEntries(prev => {
+      const next = [newEntry, ...prev];
+      updateStorage('aether_time_entries', next);
+      return next;
+    });
+    try {
+      await supabase.from('time_entries').insert([{ ...newEntry, user_id: user.id }]);
+    } catch {}
+  };
+
+  const deleteTimeEntry = async (id: string) => {
+    setTimeEntries(prev => {
+      const next = prev.filter(e => e.id !== id);
+      updateStorage('aether_time_entries', next);
+      return next;
+    });
+    try {
+      await supabase.from('time_entries').delete().eq('id', id);
+    } catch {}
+  };
+
+  const addProposal = async (client: string, title: string, scope: string, deliverables: string, timeline: string, price: string) => {
+    if (!user) return '';
+    const id = `PROP-${Math.floor(1000 + Math.random() * 9000)}`;
+    const newProposal: Proposal = {
+      id,
+      client,
+      title,
+      scope,
+      deliverables,
+      timeline,
+      price: price.startsWith('₦') ? price : `₦${price}`,
+      status: 'Draft',
+      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+    };
+    setProposals(prev => {
+      const next = [newProposal, ...prev];
+      updateStorage('aether_proposals', next);
+      return next;
+    });
+    try {
+      await supabase.from('proposals').insert([{ ...newProposal, user_id: user.id }]);
+    } catch {}
+    return id;
+  };
+
+  const updateProposalStatus = async (id: string, status: Proposal['status']) => {
+    setProposals(prev => {
+      const next = prev.map(p => p.id === id ? { ...p, status } : p);
+      updateStorage('aether_proposals', next);
+      return next;
+    });
+    try {
+      await supabase.from('proposals').update({ status }).eq('id', id);
+    } catch {}
+  };
+
+  const addExpense = async (name: string, amount: string, category: Expense['category'], client: string) => {
+    if (!user) return;
+    const newExpense: Expense = {
+      id: `EXP-${Math.floor(1000 + Math.random() * 9000)}`,
+      name,
+      amount: amount.startsWith('₦') ? amount : `₦${amount}`,
+      category,
+      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+      client
+    };
+    setExpenses(prev => {
+      const next = [newExpense, ...prev];
+      updateStorage('aether_expenses', next);
+      return next;
+    });
+    try {
+      await supabase.from('expenses').insert([{ ...newExpense, user_id: user.id }]);
+    } catch {}
+  };
+
+  const deleteExpense = async (id: string) => {
+    setExpenses(prev => {
+      const next = prev.filter(e => e.id !== id);
+      updateStorage('aether_expenses', next);
+      return next;
+    });
+    try {
+      await supabase.from('expenses').delete().eq('id', id);
+    } catch {}
+  };
+
   return (
     <DataContext.Provider value={{ 
       tasks, 
@@ -305,6 +493,10 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       clients, 
       invoices, 
       notifications,
+      timeEntries,
+      proposals,
+      expenses,
+      payments,
       user,
       addTask, 
       addClient, 
@@ -312,7 +504,13 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       updateInvoiceStatus,
       moveTask,
       markNotificationRead,
-      addNotification
+      addNotification,
+      addTimeEntry,
+      deleteTimeEntry,
+      addProposal,
+      updateProposalStatus,
+      addExpense,
+      deleteExpense
     }}>
       {children}
     </DataContext.Provider>

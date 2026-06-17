@@ -8,10 +8,12 @@ import { useData } from '@/context/DataContext';
 import styles from './clients.module.css';
 
 export default function ClientsPage() {
-  const { clients, addClient } = useData();
+  const { clients, addClient, invoices } = useData();
   const [showAdd, setShowAdd] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+
+  const parseAmount = (amt: string) => parseFloat(amt.replace(/[^0-9.-]+/g, "")) || 0;
 
   const handleAdd = () => {
     if (name && email) {
@@ -25,7 +27,7 @@ export default function ClientsPage() {
   return (
     <ModulePage 
       title="Clients" 
-      subtitle="Manage your agency's client relationships and neural links." 
+      subtitle="Manage your agency's client relationships and total billings." 
       icon={Users}
     >
       <div className={styles.container}>
@@ -45,13 +47,13 @@ export default function ClientsPage() {
               cursor: 'pointer'
             }}
           >
-            <Plus size={18} /> New Client Node
+            <Plus size={18} /> Add New Client
           </button>
         </div>
 
         {showAdd && (
           <div className={styles.formCard}>
-            <h3 className={styles.formTitle}>Initialize Client Node</h3>
+            <h3 className={styles.formTitle}>Add New Client</h3>
             <div className={styles.formGrid}>
               <input 
                 placeholder="Client Name"
@@ -66,7 +68,7 @@ export default function ClientsPage() {
                 className={styles.formInput}
               />
               <div className={styles.formActions}>
-                <button onClick={handleAdd} className={styles.submitBtn}>Create Node</button>
+                <button onClick={handleAdd} className={styles.submitBtn}>Add Client</button>
                 <button onClick={() => setShowAdd(false)} className={styles.cancelBtn}>Cancel</button>
               </div>
             </div>
@@ -74,31 +76,47 @@ export default function ClientsPage() {
         )}
 
         <div className={styles.clientsGrid}>
-          {clients.length > 0 ? clients.map((client) => (
-            <div key={client.id} className={styles.clientCard}>
-              <div className={styles.cardHeader}>
-                <div className={styles.avatar} />
-                <div className={styles.activeBadge}>
-                  ACTIVE LINK
+          {clients.length > 0 ? clients.map((client) => {
+            const clientInvoices = invoices.filter(inv => inv.client === client.name);
+            const invoiceCount = clientInvoices.length;
+            const invoiceTotal = clientInvoices.reduce((sum, inv) => sum + parseAmount(inv.amount), 0);
+
+            return (
+              <div key={client.id} className={styles.clientCard}>
+                <div className={styles.cardHeader}>
+                  <div className={styles.avatar} />
+                  <div className={styles.activeBadge}>
+                    ACTIVE
+                  </div>
+                </div>
+                <h3 className={styles.clientName}>{client.name}</h3>
+                <p className={styles.clientRole}>{client.role}</p>
+                <div className={styles.detailsList}>
+                  <div className={styles.detailItem}>
+                    <Mail size={14} className={styles.detailIcon} /> 
+                    <span className={styles.detailText}>{client.email}</span>
+                  </div>
+                  <div className={styles.detailItem}>
+                    <Shield size={14} className={styles.detailIcon} /> 
+                    <span className={styles.detailText}>Secure & Encrypted</span>
+                  </div>
+                </div>
+                <div className={styles.clientStatsRow}>
+                  <div className={styles.clientStat}>
+                    <span className={styles.clientStatLabel}>Invoices</span>
+                    <span className={styles.clientStatVal}>{invoiceCount}</span>
+                  </div>
+                  <div className={styles.clientStat}>
+                    <span className={styles.clientStatLabel}>Total Billed</span>
+                    <span className={styles.clientStatVal}>₦{invoiceTotal.toLocaleString()}</span>
+                  </div>
                 </div>
               </div>
-              <h3 className={styles.clientName}>{client.name}</h3>
-              <p className={styles.clientRole}>{client.role}</p>
-              <div className={styles.detailsList}>
-                <div className={styles.detailItem}>
-                  <Mail size={14} className={styles.detailIcon} /> 
-                  <span className={styles.detailText}>{client.email}</span>
-                </div>
-                <div className={styles.detailItem}>
-                  <Shield size={14} className={styles.detailIcon} /> 
-                  <span className={styles.detailText}>Secure Encryption Active</span>
-                </div>
-              </div>
-            </div>
-          )) : (
+            );
+          }) : (
             <div className={styles.emptyState}>
               <Users size={48} style={{ marginBottom: '1rem' }} />
-              <p>No client nodes detected in your neural network.</p>
+              <p>No clients yet. Click "Add New Client" to get started.</p>
             </div>
           )}
         </div>

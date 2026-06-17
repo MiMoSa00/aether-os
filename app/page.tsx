@@ -6,7 +6,7 @@ import { motion, useInView } from 'framer-motion';
 import {
   Bot, Zap, Shield, ChevronRight, Globe, Layers, BarChart3,
   CheckCircle, Users, FileText, TrendingUp, Star, ArrowRight,
-  Clock, DollarSign, Briefcase, MessageSquare
+  Clock, DollarSign, Briefcase, MessageSquare, LucideIcon, Sparkles
 } from 'lucide-react';
 import { VisualElement3D } from '@/components/Visuals/VisualElement3D';
 import { Logo } from '@/components/Logo/Logo';
@@ -47,7 +47,7 @@ function useCountUp(target: number, duration = 1800, trigger = false) {
 function CountUpStat({
   icon: Icon, prefix = '', target, suffix = '', label, inView
 }: {
-  icon: React.ElementType; prefix?: string; target: number;
+  icon: any; prefix?: string; target: number;
   suffix?: string; label: string; inView: boolean;
 }) {
   const count = useCountUp(target, 1800, inView);
@@ -180,7 +180,8 @@ export default function LandingPage() {
         </div>
         <div className={styles.navLinks}>
           <a href="#features" className={styles.navLink}>Features</a>
-          <a href="#how-it-works" className={styles.navLink}>How It Works</a>
+          <a href="#africa-first" className={styles.navLink}>Africa-First</a>
+          <a href="#ai-core" className={styles.navLink}>AI Core</a>
           <a href="#pricing" className={styles.navLink}>Pricing</a>
           <Link href="/login" className={styles.signInBtn}>Sign In</Link>
         </div>
@@ -246,6 +247,111 @@ export default function LandingPage() {
       {/* ── SOCIAL PROOF BAR ─────────────────────────────────── */}
       <section className={styles.proofBar}>
         <ProofBar />
+      </section>
+
+      {/* ── BUILT FOR AFRICA (AFRICA FIRST) ────────────────── */}
+      <section id="africa-first" className={styles.africaSection}>
+        <div className={styles.africaGrid}>
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className={styles.africaContent}
+          >
+            <span className={styles.sectionBadge}>AFRICA-FIRST INFRASTRUCTURE</span>
+            <h2 className={styles.sectionTitle}>Built Natively for Nigerian &amp; African Agencies</h2>
+            <p className={styles.sectionDesc}>
+              Stop paying in foreign currencies for tools that don't understand your local environment. Aether OS is designed from the ground up to support the realities of running a business in Africa.
+            </p>
+            <div className={styles.africaBullets}>
+              <div className={styles.africaBullet}>
+                <CheckCircle size={18} color="#10b981" />
+                <div>
+                  <strong>Paystack Local Checkout</strong>
+                  <p>Inquire and settle invoices in Naira (₦) natively with card, transfer, or USSD options.</p>
+                </div>
+              </div>
+              <div className={styles.africaBullet}>
+                <CheckCircle size={18} color="#10b981" />
+                <div>
+                  <strong>Compliance Readiness</strong>
+                  <p>Draft NDAs and contracts that conform to Nigerian and international corporate standards.</p>
+                </div>
+              </div>
+              <div className={styles.africaBullet}>
+                <CheckCircle size={18} color="#10b981" />
+                <div>
+                  <strong>Naira Native Ledger</strong>
+                  <p>Settle all finances, expenses, and invoices in ₦ without dealing with dollar exchange volatility.</p>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+          
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className={styles.africaVisual}
+          >
+            <div className={styles.africaCardBackdrop}>
+              <div className={styles.africaMockCard}>
+                <span className={styles.cardCurrency}>Local Payout Settlement</span>
+                <div className={styles.cardValue}>₦1,850,000</div>
+                <div className={styles.cardFooterText}>Synced to Paystack Gateway • active</div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── AI MODEL SHOWCASE ────────────────────────────────── */}
+      <section id="ai-core" className={styles.aiShowcase}>
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className={styles.sectionHeader}
+        >
+          <span className={styles.sectionBadge}>COGNITIVE INTEL CORE</span>
+          <h2 className={styles.sectionTitle}>Dual-Model Intelligence Under the Hood</h2>
+          <p className={styles.sectionDesc}>Select the processing power needed for your tasks. Toggle between models on the fly.</p>
+        </motion.div>
+
+        <div className={styles.aiModelGrid}>
+          <div className={styles.aiModelCard}>
+            <div className={styles.aiModelHeader}>
+              <div className={styles.aiModelIconBox} style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444' }}>
+                <Zap size={20} />
+              </div>
+              <h4>Claude 3 Haiku</h4>
+            </div>
+            <p className={styles.aiModelDesc}>Optimized for rapid, instant answers. Best for drafting short replies, formatting lists, and clearing micro-tasks.</p>
+            <span className={styles.aiModelSpeed}>Latency: &lt; 1.0s</span>
+          </div>
+
+          <div className={`${styles.aiModelCard} ${styles.aiModelCardFeatured}`}>
+            <div className={styles.aiModelHeader}>
+              <div className={styles.aiModelIconBox} style={{ background: 'rgba(99, 102, 241, 0.1)', color: '#818cf8' }}>
+                <Sparkles size={20} />
+              </div>
+              <h4>Claude 3.5 Sonnet</h4>
+            </div>
+            <p className={styles.aiModelDesc}>The ultimate balance of logic, speed, and accuracy. Best for drafting full proposals, analyzing documents, and task generation.</p>
+            <span className={styles.aiModelSpeed} style={{ color: '#818cf8' }}>Latency: &lt; 2.5s · Recommended</span>
+          </div>
+
+          <div className={styles.aiModelCard}>
+            <div className={styles.aiModelHeader}>
+              <div className={styles.aiModelIconBox} style={{ background: 'rgba(168, 85, 247, 0.1)', color: '#c084fc' }}>
+                <Bot size={20} />
+              </div>
+              <h4>Claude 3 Opus</h4>
+            </div>
+            <p className={styles.aiModelDesc}>Deep cognitive synthesis for complex issues. Best for financial auditing, strategy planning, and research briefing.</p>
+            <span className={styles.aiModelSpeed}>Latency: &lt; 5.0s</span>
+          </div>
+        </div>
       </section>
 
       {/* ── FEATURES ─────────────────────────────────────────── */}
@@ -389,6 +495,65 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* ── COMPARISON TABLE ───────────────────────────────── */}
+      <section className={styles.comparisonSection}>
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className={styles.sectionHeader}
+        >
+          <span className={styles.sectionBadge}>MARKET REVENUE VALUE</span>
+          <h2 className={styles.sectionTitle}>How Aether OS Compares</h2>
+          <p className={styles.sectionDesc}>Why leading Nigerian agencies choose us over traditional, expensive overseas options.</p>
+        </motion.div>
+
+        <div className={styles.tableCard}>
+          <table className={styles.compTable}>
+            <thead>
+              <tr>
+                <th>Feature / Capability</th>
+                <th>Aether OS</th>
+                <th>Traditional Apps (USD)</th>
+                <th>Notion / Spreadsheets</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Naira Ledger &amp; Invoices</strong></td>
+                <td className={styles.tick}>Yes (₦ Native)</td>
+                <td className={styles.cross}>No (USD Only)</td>
+                <td className={styles.dash}>Manual Setup</td>
+              </tr>
+              <tr>
+                <td><strong>Local Gateways (Paystack)</strong></td>
+                <td className={styles.tick}>Integrated</td>
+                <td className={styles.cross}>No Payouts</td>
+                <td className={styles.cross}>None</td>
+              </tr>
+              <tr>
+                <td><strong>Built-in Claude AI core</strong></td>
+                <td className={styles.tick}>Active 24/7</td>
+                <td className={styles.cross}>None / Extra Subscription</td>
+                <td className={styles.cross}>None</td>
+              </tr>
+              <tr>
+                <td><strong>All-in-one workspaces</strong></td>
+                <td className={styles.tick}>Invoices + Tasks + Time + Proposals</td>
+                <td className={styles.tick}>Usually Separate Apps</td>
+                <td className={styles.dash}>Complex custom builds</td>
+              </tr>
+              <tr>
+                <td><strong>Monthly Expense (Naira)</strong></td>
+                <td className={styles.tick} style={{ color: '#10b981', fontWeight: 800 }}>From ₦5,000</td>
+                <td className={styles.cross}>₦30,000+ (USD conversion)</td>
+                <td className={styles.tick}>Free (no integration)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
       {/* ── PRICING ──────────────────────────────────────────── */}
       <section id="pricing" className={styles.pricing}>
         <motion.div
@@ -403,27 +568,27 @@ export default function LandingPage() {
         </motion.div>
 
         <div className={styles.pricingGrid}>
-          {/* Solo Plan */}
+          {/* Free Plan */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className={styles.pricingCard}
           >
-            <div className={styles.planName}>Solo</div>
-            <div className={styles.planDesc}>Perfect for freelancers and solo agency owners</div>
+            <div className={styles.planName}>Free</div>
+            <div className={styles.planDesc}>Perfect for freelancers starting out</div>
             <div className={styles.planPrice}>
-              ₦45,000
+              ₦0
               <span className={styles.planPer}>/month</span>
             </div>
             <ul className={styles.planFeatures}>
               {[
-                'Unlimited clients & projects',
-                'Invoice creation & tracking',
-                'AI business assistant',
-                'Task management board',
-                'Revenue dashboard',
-                'Email support',
+                '1 Client limit',
+                'Up to 5 Invoices',
+                'Basic AI assistant integration',
+                'Standard Kanban board',
+                'Basic revenue analytics',
+                'Standard Support',
               ].map((f, i) => (
                 <li key={i} className={styles.planFeature}>
                   <CheckCircle size={15} color="#22c55e" />
@@ -431,12 +596,12 @@ export default function LandingPage() {
                 </li>
               ))}
             </ul>
-            <Link href="/signup" className={styles.primaryBtn} style={{ width: '100%', justifyContent: 'center', marginTop: 'auto' }}>
-              Get Started <ArrowRight size={16} />
+            <Link href="/signup" className={styles.secondaryBtn} style={{ width: '100%', justifyContent: 'center', marginTop: 'auto', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>
+              Sign Up Free <ArrowRight size={16} />
             </Link>
           </motion.div>
 
-          {/* Team Plan */}
+          {/* Pro Plan */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -444,22 +609,55 @@ export default function LandingPage() {
             transition={{ delay: 0.1 }}
             className={`${styles.pricingCard} ${styles.pricingCardFeatured}`}
           >
-            <div className={styles.featuredBadge}>Most Popular</div>
-            <div className={styles.planName}>Team</div>
-            <div className={styles.planDesc}>For growing agencies with a team</div>
+            <div className={styles.featuredBadge}>Recommended</div>
+            <div className={styles.planName}>Pro</div>
+            <div className={styles.planDesc}>For growing boutique agencies</div>
             <div className={styles.planPrice}>
-              ₦120,000
+              ₦5,000
               <span className={styles.planPer}>/month</span>
             </div>
             <ul className={styles.planFeatures}>
               {[
-                'Everything in Solo',
-                'Up to 10 team members',
-                'Role-based access control',
-                'Priority AI assistant',
-                'Advanced revenue reports',
-                'Client portal access',
-                'Priority support',
+                'Up to 10 active Client accounts',
+                'Unlimited Invoices & Proposals',
+                'Advanced Claude AI core mode',
+                'Interactive Time Tracking logs',
+                'Detailed Expense & Profit margin reports',
+                'Priority email support',
+              ].map((f, i) => (
+                <li key={i} className={styles.planFeature}>
+                  <CheckCircle size={15} color="#10b981" />
+                  <span>{f}</span>
+                </li>
+              ))}
+            </ul>
+            <Link href="/signup" className={styles.primaryBtn} style={{ width: '100%', justifyContent: 'center', marginTop: 'auto' }}>
+              Subscribe Pro <ArrowRight size={16} />
+            </Link>
+          </motion.div>
+
+          {/* Enterprise Plan */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className={styles.pricingCard}
+          >
+            <div className={styles.planName}>Enterprise</div>
+            <div className={styles.planDesc}>For large scale operations</div>
+            <div className={styles.planPrice}>
+              ₦15,000
+              <span className={styles.planPer}>/month</span>
+            </div>
+            <ul className={styles.planFeatures}>
+              {[
+                'Unlimited Client accounts',
+                'Unlimited Invoices & Proposals',
+                'Dedicated Opus AI analysis node',
+                'Custom client portals',
+                'Team permission access rules',
+                '24/7 Dedicated Support manager',
               ].map((f, i) => (
                 <li key={i} className={styles.planFeature}>
                   <CheckCircle size={15} color="#22c55e" />
@@ -467,8 +665,8 @@ export default function LandingPage() {
                 </li>
               ))}
             </ul>
-            <Link href="/signup" className={styles.primaryBtn} style={{ width: '100%', justifyContent: 'center', marginTop: 'auto' }}>
-              Get Started <ArrowRight size={16} />
+            <Link href="/signup" className={styles.primaryBtn} style={{ width: '100%', justifyContent: 'center', marginTop: 'auto', background: 'linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%)' }}>
+              Subscribe Enterprise <ArrowRight size={16} />
             </Link>
           </motion.div>
         </div>

@@ -22,7 +22,7 @@ export default function TasksPage() {
   return (
     <ModulePage 
       title="Tasks" 
-      subtitle="Optimize your agency's velocity and neural task distribution." 
+      subtitle="Manage your projects, tasks, and deadlines." 
       icon={CheckCircle}
     >
       <div style={{ width: '100%', padding: 'var(--page-content-padding, 2rem)' }}>
@@ -56,7 +56,7 @@ export default function TasksPage() {
           }}>
             <input 
               autoFocus
-              placeholder="Enter task objective..."
+              placeholder="Enter task name..."
               value={newContent}
               onChange={(e) => setNewContent(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
@@ -71,7 +71,7 @@ export default function TasksPage() {
               }}
             />
             <div style={{ display: 'flex', gap: '1rem' }}>
-              <button onClick={handleAdd} style={{ padding: '0.5rem 1rem', background: '#22c55e', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer' }}>Add Node</button>
+              <button onClick={handleAdd} style={{ padding: '0.5rem 1rem', background: '#22c55e', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer' }}>Add Task</button>
               <button onClick={() => setShowAdd(false)} style={{ padding: '0.5rem 1rem', background: 'transparent', color: 'rgba(255,255,255,0.5)', border: 'none', cursor: 'pointer' }}>Cancel</button>
             </div>
           </div>

@@ -15,7 +15,7 @@ export default function InvoicesPage() {
   const handleAdd = () => {
     console.log('Attempting to initialize invoice:', { selectedClient, amount });
     if (!selectedClient || !amount) {
-      alert('Neural link incomplete: Please select a client node and specify a settlement amount.');
+      alert('Please select a client and enter an amount.');
       return;
     }
     
@@ -28,7 +28,7 @@ export default function InvoicesPage() {
   return (
     <ModulePage 
       title="Invoices" 
-      subtitle="Track your agency's financial flow and Naira settlements." 
+      subtitle="Track your invoices and payment status." 
       icon={FileText}
     >
       <div className={styles.container}>
@@ -43,10 +43,10 @@ export default function InvoicesPage() {
 
         {showAdd && (
           <div className={styles.formCard}>
-            <h3 className={styles.formTitle}>New Financial Settlement</h3>
+            <h3 className={styles.formTitle}>New Invoice</h3>
             <div className={styles.formGrid}>
               <div className={styles.formField}>
-                <label className={styles.formLabel}>Select Client Node</label>
+                <label className={styles.formLabel}>Select Client</label>
                 <select 
                   value={selectedClient}
                   onChange={(e) => setSelectedClient(e.target.value)}
@@ -56,7 +56,7 @@ export default function InvoicesPage() {
                   {clients.length > 0 ? (
                     clients.map(c => <option key={c.id} value={c.name}>{c.name}</option>)
                   ) : (
-                    <option disabled>No client nodes detected...</option>
+                    <option disabled>No clients added yet...</option>
                   )}
                 </select>
               </div>
@@ -71,7 +71,7 @@ export default function InvoicesPage() {
                 />
               </div>
               <div className={styles.formActions}>
-                <button onClick={handleAdd} className={styles.submitBtn}>Initialize Invoice</button>
+                <button onClick={handleAdd} className={styles.submitBtn}>Create Invoice</button>
                 <button onClick={() => setShowAdd(false)} className={styles.cancelBtn}>Cancel</button>
               </div>
             </div>
@@ -104,7 +104,7 @@ export default function InvoicesPage() {
           )) : (
             <div className={styles.emptyState}>
               <FileText size={48} className={styles.emptyIcon} />
-              <p>No financial settlements found in your agency nodes.</p>
+              <p>No invoices yet. Click "Generate Invoice" to create your first one.</p>
             </div>
           )}
         </div>

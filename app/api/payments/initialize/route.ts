@@ -3,8 +3,9 @@ import { NextResponse } from 'next/server';
 const PAYSTACK_SECRET = process.env.PAYSTACK_SECRET_KEY!;
 
 const PLANS: Record<string, { name: string; amount: number }> = {
-  pro: { name: 'Pro', amount: 500000 },      // ₦5,000 in kobo
-  agency: { name: 'Agency', amount: 1500000 }, // ₦15,000 in kobo
+  test: { name: 'Test Plan', amount: 20000 },  // ₦200 in kobo (test plan)
+  pro: { name: 'Pro', amount: 500000 },        // ₦5,000 in kobo
+  agency: { name: 'Agency', amount: 1500000 },  // ₦15,000 in kobo
 };
 
 export async function POST(request: Request) {

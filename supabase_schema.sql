@@ -51,6 +51,7 @@ ON public.payments FOR SELECT USING (auth.uid() = user_id);
 -- 6. Insert default subscription plans
 INSERT INTO public.plans (id, name, price_ngn, features) VALUES
 ('free', 'Free Starter', 0, '["5 Clients maximum", "10 Invoices total", "Basic dashboard reports", "Community support"]'),
+('test', 'Test Plan', 200, '["Access to payment routing tests", "Holds live payments", "Ideal for developer system checks"]'),
 ('pro', 'Agency Pro', 5000, '["Unlimited Clients", "Unlimited Invoices", "Full AI Agent access", "Priority support", "Metrics and growth curves"]'),
 ('agency', 'Agency Enterprise', 15000, '["Everything in Pro", "Private Developer Console", "Client performance reports", "Advanced API integrations", "24/7 dedicated support"]')
 ON CONFLICT (id) DO UPDATE 

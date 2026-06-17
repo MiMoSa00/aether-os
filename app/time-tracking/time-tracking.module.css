@@ -1,0 +1,324 @@
+.container {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 900px;
+}
+
+/* Stats */
+.statsRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1rem;
+}
+
+.statCard {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+}
+
+.statValue {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.3rem;
+}
+
+.statLabel {
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.4);
+}
+
+/* Timer Card */
+.timerCard {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 24px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.timerDisplay {
+  font-size: clamp(2.5rem, 8vw, 4rem);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.05em;
+  color: white;
+}
+
+.timerPulse {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #3b82f6, transparent);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+.timerForm {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.select, .input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  color: white;
+  font-size: 0.9rem;
+  font-family: inherit;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.select option { background: #0f0f14; }
+.select:disabled, .input:disabled { opacity: 0.5; cursor: not-allowed; }
+.select:focus, .input:focus { border-color: rgba(59,130,246,0.5); }
+
+.timerMeta {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.billableToggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.6);
+  cursor: pointer;
+}
+
+.billableToggle input { cursor: pointer; accent-color: #3b82f6; }
+
+.rateInput {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.5);
+}
+
+.rateField {
+  width: 90px;
+  padding: 0.35rem 0.6rem;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  color: white;
+  font-size: 0.85rem;
+  font-family: inherit;
+  outline: none;
+}
+
+.startBtn, .stopBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.85rem 2.5rem;
+  border: none;
+  border-radius: 14px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.startBtn {
+  background: #2563eb;
+  color: white;
+  box-shadow: 0 6px 20px rgba(37,99,235,0.3);
+}
+.startBtn:hover { background: #3b82f6; transform: translateY(-1px); }
+
+.stopBtn {
+  background: rgba(239,68,68,0.15);
+  color: #f87171;
+  border: 1px solid rgba(239,68,68,0.3);
+}
+.stopBtn:hover { background: rgba(239,68,68,0.2); }
+
+/* Log */
+.logSection {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 20px;
+  padding: 1.75rem;
+}
+
+.logTitle {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 1.25rem;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 2rem 0;
+  color: rgba(255,255,255,0.35);
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.entryList { display: flex; flex-direction: column; gap: 0.6rem; }
+
+.entryRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 14px;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.entryLeft { display: flex; flex-direction: column; gap: 0.2rem; }
+.entryClient { font-size: 0.9rem; font-weight: 700; }
+.entryDesc { font-size: 0.82rem; color: rgba(255,255,255,0.5); }
+.entryMeta { font-size: 0.75rem; color: rgba(255,255,255,0.3); }
+
+.entryRight {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.entryDuration { font-size: 0.9rem; font-weight: 700; }
+.entryBillable { font-size: 0.85rem; color: #22c55e; font-weight: 600; }
+
+.billableBadge, .nonBillableBadge {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.2rem 0.55rem;
+  border-radius: 100px;
+}
+
+.billableBadge { background: rgba(34,197,94,0.12); color: #4ade80; }
+.nonBillableBadge { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.4); }
+
+.deleteBtn {
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.25);
+  cursor: pointer;
+  padding: 0.3rem;
+  border-radius: 6px;
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+}
+.deleteBtn:hover { color: #f87171; }
+
+.timerActions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  width: 100%;
+}
+
+.pauseBtn, .resumeBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.85rem 2rem;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: 1;
+  max-width: 200px;
+}
+
+.pauseBtn {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border-color: rgba(245, 158, 11, 0.3);
+}
+.pauseBtn:hover {
+  background: rgba(245, 158, 11, 0.25);
+}
+
+.resumeBtn {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+  border-color: rgba(59, 130, 246, 0.3);
+}
+.resumeBtn:hover {
+  background: rgba(59, 130, 246, 0.25);
+}
+
+.timerCard .stopBtn {
+  flex: 1;
+  max-width: 200px;
+}
+
+/* Responsive Styling Rules */
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem 0.5rem;
+  }
+  .timerCard, .logSection {
+    padding: 1.25rem;
+  }
+  .timerActions {
+    flex-direction: column;
+    width: 100%;
+    gap: 0.75rem;
+  }
+  .pauseBtn, .resumeBtn, .timerCard .stopBtn, .startBtn {
+    max-width: 100% !important;
+    width: 100% !important;
+    box-sizing: border-box;
+  }
+  .timerMeta {
+    justify-content: space-between;
+    width: 100%;
+  }
+  .entryRow {
+    padding: 1rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+  .entryLeft {
+    width: 100%;
+  }
+  .entryRight {
+    width: 100%;
+    justify-content: space-between;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding-top: 0.75rem;
+    margin-top: 0.25rem;
+  }
+}

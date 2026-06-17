@@ -1,0 +1,542 @@
+.pageBackground {
+  min-height: 100vh;
+  background-color: #0b0f19;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.08) 0, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(79, 70, 229, 0.05) 0, transparent 50%);
+  color: rgba(255, 255, 255, 0.9);
+  display: flex;
+  flex-direction: column;
+}
+
+.topActionsBar {
+  background: rgba(11, 15, 25, 0.7);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+}
+
+.barInner {
+  max-width: 850px;
+  margin: 0 auto;
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.brandLogo {
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.backBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.backBtn:hover {
+  color: #fff;
+}
+
+.iconButton {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #fff;
+  padding: 0.45rem 1rem;
+  border-radius: var(--radius-md);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: background 0.2s;
+}
+
+.iconButton:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Container */
+.container {
+  max-width: 850px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  flex: 1;
+}
+
+/* Status Callout Banner */
+.statusCallout {
+  width: 100%;
+}
+
+.statusAlert {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(10px);
+  gap: 1.5rem;
+}
+
+@media (max-width: 640px) {
+  .statusAlert {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+}
+
+.alertText h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+  color: #fff;
+}
+
+.alertText p {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.4;
+}
+
+.alertActions {
+  display: flex;
+  gap: 0.75rem;
+  align-self: center;
+}
+
+@media (max-width: 640px) {
+  .alertActions {
+    align-self: flex-end;
+  }
+}
+
+.alertIcon {
+  flex-shrink: 0;
+}
+
+/* Banner Alert Themes */
+.alertPending {
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+.alertAccepted {
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.alertAccepted .alertIcon {
+  color: #10b981;
+}
+
+.alertDeclined {
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+.alertDeclined .alertIcon {
+  color: #ef4444;
+}
+
+.alertDraft {
+  background: rgba(139, 92, 246, 0.08);
+  border: 1px solid rgba(139, 92, 246, 0.25);
+}
+
+/* Buttons in Callout */
+.acceptBtn {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #fff;
+  border: none;
+  padding: 0.6rem 1.25rem;
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+  transition: opacity 0.2s;
+}
+
+.acceptBtn:hover {
+  opacity: 0.95;
+}
+
+.declineBtn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.6);
+  padding: 0.6rem 1.25rem;
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s;
+}
+
+.declineBtn:hover {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.05);
+  border-color: rgba(239, 68, 68, 0.15);
+}
+
+/* Document styling (Modern Brief) */
+.documentCard {
+  background: rgba(17, 22, 34, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: var(--radius-xl);
+  padding: 3.5rem 3rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(12px);
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  position: relative;
+}
+
+@media (max-width: 640px) {
+  .documentCard {
+    padding: 2rem 1.5rem;
+  }
+}
+
+.docHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.logoText {
+  font-size: 1.5rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  color: #fff;
+  background: linear-gradient(135deg, #fff 0%, #818cf8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 0.5rem;
+}
+
+.agencyDetails {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.4);
+  line-height: 1.5;
+}
+
+.docMeta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.75rem;
+}
+
+@media (max-width: 640px) {
+  .docMeta {
+    align-items: flex-start;
+  }
+}
+
+.docMeta h2 {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #818cf8;
+  letter-spacing: 0.05em;
+}
+
+.metaTable {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
+  border-collapse: collapse;
+}
+
+.metaTable td {
+  padding: 0.2rem 0;
+}
+
+.metaTable td:first-child {
+  padding-right: 1.5rem;
+}
+
+.metaTable td:last-child {
+  color: #fff;
+}
+
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+}
+
+.clientSection {
+  background: rgba(255, 255, 255, 0.015);
+  border-left: 3px solid #6366f1;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+.sectionLabel {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.clientSection h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+  margin-top: 0.25rem;
+}
+
+.proposalTitle {
+  font-size: 1.85rem;
+  font-weight: 850;
+  letter-spacing: -0.025em;
+  color: #fff;
+  line-height: 1.2;
+}
+
+.docSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.sectionHeading {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #818cf8;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.bodyText {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.75);
+  white-space: pre-wrap;
+}
+
+.deliverablesList {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.75);
+  padding-left: 1.25rem;
+}
+
+.deliverablesList li {
+  margin-bottom: 0.4rem;
+}
+
+.financialSummary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  padding: 1.5rem;
+  border-radius: var(--radius-lg);
+}
+
+@media (max-width: 480px) {
+  .financialSummary {
+    grid-template-columns: 1fr;
+  }
+}
+
+.summaryItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.summaryLabel {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+}
+
+.summaryValue {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+/* Signatures */
+.signatureSection {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 3rem;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.sigCard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: calc(50% - 1rem);
+  min-width: 260px;
+}
+
+.sigLine {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.2);
+  margin-top: 2.5rem;
+}
+
+.sigLabel {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.4;
+}
+
+.sigLabel strong {
+  color: #fff;
+}
+
+.acceptedSignature {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  color: #10b981;
+  font-size: 0.85rem;
+  font-weight: 600;
+  min-height: 2.6rem;
+}
+
+.docFooter {
+  text-align: center;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.35);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+/* Not Found View */
+.notFoundContainer {
+  min-height: 100vh;
+  background-color: #0b0f19;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.notFoundCard {
+  background: var(--surface-glass);
+  border: 1px solid var(--surface-border);
+  padding: 3rem 2rem;
+  border-radius: var(--radius-xl);
+  text-align: center;
+  max-width: 420px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.notFoundCard h2 {
+  font-size: 1.5rem;
+  color: #fff;
+  margin-top: 0.5rem;
+}
+
+.notFoundCard p {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.5;
+}
+
+.errorIcon {
+  color: #ef4444;
+}
+
+.homeBtn {
+  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  color: #fff;
+  border: none;
+  padding: 0.65rem 1.5rem;
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  margin-top: 0.5rem;
+  transition: opacity 0.2s;
+}
+
+.homeBtn:hover {
+  opacity: 0.9;
+}
+
+/* Status Badges */
+.statusBadge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 0.15rem 0.40rem;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Print Styles */
+@media print {
+  .pageBackground {
+    background: #fff !important;
+    color: #000 !important;
+  }
+  .topActionsBar, .statusCallout, .iconButton, .backBtn {
+    display: none !important;
+  }
+  .container {
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
+  .documentCard {
+    background: #fff !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    color: #000 !important;
+  }
+  .logoText {
+    background: none !important;
+    -webkit-text-fill-color: #000 !important;
+    color: #000 !important;
+  }
+  .summaryValue, .priceVal {
+    color: #000 !important;
+  }
+  .sectionHeading, .docSectionTitle {
+    color: #4f46e5 !important;
+  }
+  .divider, .signLine {
+    background: #ddd !important;
+    border-color: #ddd !important;
+  }
+  .sigLabel, .agencyDetails, .docMeta, .docFooter {
+    color: #444 !important;
+  }
+}

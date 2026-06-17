@@ -74,7 +74,7 @@ function lsLoadActiveSession(): string | null {
 }
 
 export function ChatInterface() {
-  const { clients, invoices, tasks, user } = useData();
+  const { clients, invoices, tasks, expenses, proposals, timeEntries, payments, user, addTask, addClient, addProposal } = useData();
   const supabase = createClient();
 
   const [messages, setMessages]         = useState<Message[]>([]);
@@ -387,7 +387,7 @@ export function ChatInterface() {
         body: JSON.stringify({
           message: currentInput,
           messages: nextMessages.map(m => ({ role: m.role, content: m.content })),
-          context: { clients, invoices, tasks },
+          context: { clients, invoices, tasks, expenses, proposals, timeEntries, payments },
           model: selectedModel.id,
         }),
       });
@@ -407,6 +407,29 @@ export function ChatInterface() {
       setMessages(withAiMsg);
       lsSaveMsgs(sessionId, withAiMsg); // Save AI response to localStorage immediately
       await safeInsert(aiMsg);
+
+      // Process any actions returned from the AI in real time
+      if (data.actions && Array.isArray(data.actions)) {
+        for (const action of data.actions) {
+          try {
+            if (action.type === 'CREATE_TASK') {
+              const { content, priority } = action.payload || {};
+              if (content) addTask('todo', content, priority || 'Medium');
+            } else if (action.type === 'CREATE_CLIENT') {
+              const { name, role, email, phone } = action.payload || {};
+              if (name) addClient(name, role || '', email || '', phone || '');
+            } else if (action.type === 'CREATE_PROPOSAL') {
+              const { client, title, scope, deliverables, timeline, price } = action.payload || {};
+              if (client && title) {
+                await addProposal(client, title, scope || '', deliverables || '', timeline || '', price || '0');
+              }
+            }
+          } catch (actionErr) {
+            console.error('Error executing AI action:', actionErr);
+          }
+        }
+      }
+
       setIsLoading(false);
 
       // Update session list

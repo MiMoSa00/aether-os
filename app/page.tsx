@@ -1,78 +1,164 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { Bot, Zap, Shield, ChevronRight, Globe, Layers, BarChart3 } from 'lucide-react';
+import {
+  Bot, Zap, Shield, ChevronRight, Globe, Layers, BarChart3,
+  CheckCircle, Users, FileText, TrendingUp, Star, ArrowRight,
+  Clock, DollarSign, Briefcase, MessageSquare
+} from 'lucide-react';
 import { VisualElement3D } from '@/components/Visuals/VisualElement3D';
 import { Logo } from '@/components/Logo/Logo';
 import styles from './page.module.css';
 
-const FeatureCard = ({ icon: Icon, title, desc, href }: any) => {
-  const content = (
-    <motion.div 
-      whileHover={{ y: -5 }}
+/* ─── Reusable Feature Card ───────────────────────────────────── */
+const FeatureCard = ({ icon: Icon, title, desc, href, color = 'blue' }: any) => {
+  const card = (
+    <motion.div
+      whileHover={{ y: -4 }}
       className={styles.featureCard}
-      style={{ height: '100%', cursor: href ? 'pointer' : 'default', display: 'flex', flexDirection: 'column' }}
+      style={{ cursor: href ? 'pointer' : 'default' }}
     >
-      <div className={styles.featureIcon}>
-        <Icon size={24} />
+      <div className={`${styles.featureIcon} ${styles[`icon_${color}`]}`}>
+        <Icon size={22} />
       </div>
       <h3 className={styles.featureTitle}>{title}</h3>
-      <p className={styles.featureText} style={{ flexGrow: 1 }}>{desc}</p>
+      <p className={styles.featureText}>{desc}</p>
     </motion.div>
   );
-
-  return href ? (
-    <Link href={href} style={{ textDecoration: 'none', display: 'block', height: '100%', color: 'inherit' }}>
-      {content}
-    </Link>
-  ) : content;
+  return href
+    ? <Link href={href} style={{ textDecoration: 'none', color: 'inherit', display: 'block', height: '100%' }}>{card}</Link>
+    : card;
 };
 
+/* ─── Step Card (How it works) ────────────────────────────────── */
+const StepCard = ({ num, title, desc }: any) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true }}
+    className={styles.stepCard}
+  >
+    <div className={styles.stepNum}>{num}</div>
+    <h3 className={styles.stepTitle}>{title}</h3>
+    <p className={styles.stepDesc}>{desc}</p>
+  </motion.div>
+);
+
+/* ─── Testimonial Card ────────────────────────────────────────── */
+const TestimonialCard = ({ quote, name, role, stars = 5 }: any) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true }}
+    className={styles.testimonialCard}
+  >
+    <div className={styles.stars}>
+      {Array.from({ length: stars }).map((_, i) => (
+        <Star key={i} size={14} fill="#fbbf24" color="#fbbf24" />
+      ))}
+    </div>
+    <p className={styles.testimonialQuote}>"{quote}"</p>
+    <div className={styles.testimonialAuthor}>
+      <div className={styles.authorAvatar}>{name[0]}</div>
+      <div>
+        <div className={styles.authorName}>{name}</div>
+        <div className={styles.authorRole}>{role}</div>
+      </div>
+    </div>
+  </motion.div>
+);
+
+/* ─── Main Page ───────────────────────────────────────────────── */
 export default function LandingPage() {
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
+
+  const faqs = [
+    {
+      q: 'Do I need any technical skills to use Aether OS?',
+      a: 'No. Aether OS is built for agency owners and freelancers, not developers. If you can use email, you can use Aether OS — everything is guided and simple.'
+    },
+    {
+      q: 'Can I manage multiple clients at the same time?',
+      a: 'Yes. You can add unlimited clients, track their projects, generate invoices, and manage communication — all from one dashboard.'
+    },
+    {
+      q: 'What does the AI assistant actually do?',
+      a: 'The built-in AI (powered by Claude) helps you draft proposals, summarise client notes, forecast revenue, answer business questions, and save hours of manual work every week.'
+    },
+    {
+      q: 'Is my data safe?',
+      a: 'Absolutely. All your data is stored securely with enterprise-grade encryption. We never sell or share your information with third parties.'
+    },
+    {
+      q: 'Can I cancel at any time?',
+      a: 'Yes, cancel anytime with no penalties or hidden fees. Your data remains accessible for 30 days after cancellation.'
+    },
+  ];
+
   return (
     <main className={styles.main}>
+
+      {/* ── NAV ─────────────────────────────────────────────── */}
       <nav className={styles.nav}>
         <div className={styles.logoArea}>
-          {/* use shared Logo component for consistent styling */}
-          <Logo href="/" iconSize={50} centered={true} />
+          <Logo href="/" iconSize={46} centered={true} />
         </div>
         <div className={styles.navLinks}>
           <a href="#features" className={styles.navLink}>Features</a>
-          <a href="#solutions" className={styles.navLink}>Solutions</a>
+          <a href="#how-it-works" className={styles.navLink}>How It Works</a>
           <a href="#pricing" className={styles.navLink}>Pricing</a>
           <Link href="/login" className={styles.signInBtn}>Sign In</Link>
         </div>
       </nav>
 
+      {/* ── HERO ─────────────────────────────────────────────── */}
       <section className={styles.hero}>
         <motion.div
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
         >
-          {/* <div className={styles.badge}>
-            <Sparkles size={16} />
-            <span>The Future of Agency Management</span>
-          </div> */}
+          <div className={styles.badge}>
+            <Zap size={14} />
+            <span>Built for modern agencies &amp; freelancers</span>
+          </div>
+
           <h1 className={styles.title}>
-            Your Agency's <span className={styles.gradientText}>Neural</span> Core
+            Run Your Entire Agency{' '}
+            <span className={styles.gradientText}>From One Place</span>
           </h1>
+
           <p className={styles.description}>
-            Aether OS is the first neural-linked workspace designed to automate agency operations, optimize revenue, and scale strategy with local AI intelligence.
+            Aether OS brings your clients, projects, invoices, and AI assistant together in a single, beautifully designed workspace — so you can focus on growing your business, not managing it.
           </p>
+
+          <div className={styles.heroBullets}>
+            {[
+              'Track clients & projects in real time',
+              'Send professional invoices in seconds',
+              'Get AI-powered business insights',
+            ].map((b, i) => (
+              <div key={i} className={styles.heroBullet}>
+                <CheckCircle size={16} color="#22c55e" />
+                <span>{b}</span>
+              </div>
+            ))}
+          </div>
+
           <div className={styles.ctaGroup}>
             <Link href="/signup" className={styles.primaryBtn}>
-              Start Your Agency <ChevronRight size={18} />
+              Get Started Free <ChevronRight size={18} />
             </Link>
             <Link href="/login" className={styles.secondaryBtn}>
-              Access Dashboard
+              Sign In
             </Link>
           </div>
+
+          <p className={styles.heroNote}>No credit card required · Set up in under 2 minutes</p>
         </motion.div>
-        
+
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -84,107 +170,340 @@ export default function LandingPage() {
         </motion.div>
       </section>
 
+      {/* ── SOCIAL PROOF BAR ─────────────────────────────────── */}
+      <section className={styles.proofBar}>
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          className={styles.proofInner}
+        >
+          {[
+            { icon: Users, stat: '500+', label: 'Agencies Onboard' },
+            { icon: DollarSign, stat: '₦2B+', label: 'Revenue Tracked' },
+            { icon: FileText, stat: '10,000+', label: 'Invoices Sent' },
+            { icon: Clock, stat: '5 hrs', label: 'Saved Per Week' },
+          ].map(({ icon: Icon, stat, label }, i) => (
+            <div key={i} className={styles.proofItem}>
+              <Icon size={20} className={styles.proofIcon} />
+              <div className={styles.proofStat}>{stat}</div>
+              <div className={styles.proofLabel}>{label}</div>
+            </div>
+          ))}
+        </motion.div>
+      </section>
+
+      {/* ── FEATURES ─────────────────────────────────────────── */}
       <section id="features" className={styles.features}>
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
           className={styles.sectionHeader}
         >
-          <h2 className={styles.sectionTitle}>Neural Infrastructure</h2>
-          <p className={styles.sectionDesc}>Everything you need to run a high-performance modern agency.</p>
+          <span className={styles.sectionBadge}>Everything you need</span>
+          <h2 className={styles.sectionTitle}>All Your Agency Tools, Finally Together</h2>
+          <p className={styles.sectionDesc}>
+            Stop juggling between spreadsheets, WhatsApp, and separate apps. Aether OS gives you everything in one clean workspace.
+          </p>
         </motion.div>
+
         <div className={styles.featureGrid}>
           {[
-            { icon: Bot, title: "Claude AI Intelligence", desc: "Claude-powered models analyze your data with industry-leading accuracy, speed, and reasoning.", href: "/agent" },
-            { icon: BarChart3, title: "Revenue Projection", desc: "Neural forecasts analyze your pipeline and predict growth with high-fidelity accuracy.", href: "/finance" },
-            { icon: Layers, title: "Dynamic Kanban", desc: "Fluid project nodes that move with your agency's velocity and priority.", href: "/tasks" },
-            { icon: Shield, title: "Secure Ledger", desc: "Enterprise-grade invoice and contract management with military-level encryption.", href: "/invoices" }
-          ].map((feature, i) => (
+            {
+              icon: Bot,
+              title: 'AI Business Assistant',
+              desc: 'Ask anything — draft a proposal, get revenue insights, summarise client notes. Your personal AI handles the busywork so you can focus on what matters.',
+              href: '/agent',
+              color: 'purple',
+            },
+            {
+              icon: BarChart3,
+              title: 'Revenue Tracking',
+              desc: 'See exactly how much you\'re earning, what\'s pending, and where your growth is coming from — updated in real time.',
+              href: '/finance',
+              color: 'blue',
+            },
+            {
+              icon: Layers,
+              title: 'Project Management',
+              desc: 'Organise tasks with a drag-and-drop board. Know what\'s in progress, what\'s done, and what needs attention at a glance.',
+              href: '/tasks',
+              color: 'green',
+            },
+            {
+              icon: FileText,
+              title: 'Invoice Management',
+              desc: 'Create and send professional invoices in seconds. Track payment status and never lose track of who owes you money.',
+              href: '/invoices',
+              color: 'orange',
+            },
+            {
+              icon: Users,
+              title: 'Client Directory',
+              desc: 'Keep all your client contacts, history, and project details organised and easy to find — no more searching through emails.',
+              href: '/clients',
+              color: 'pink',
+            },
+            {
+              icon: Shield,
+              title: 'Secure & Private',
+              desc: 'Your business data stays yours. Enterprise-grade security with role-based access so only the right people see the right things.',
+              color: 'blue',
+            },
+          ].map((f, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              style={{ height: '100%' }}
+              transition={{ delay: i * 0.08 }}
             >
-              <FeatureCard {...feature} />
+              <FeatureCard {...f} />
             </motion.div>
           ))}
         </div>
       </section>
 
-      <section id="solutions" className={styles.features}>
-        <motion.div 
+      {/* ── HOW IT WORKS ──────────────────────────────────────── */}
+      <section id="how-it-works" className={styles.howItWorks}>
+        <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           className={styles.sectionHeader}
         >
-          <h2 className={styles.sectionTitle}>Strategic Solutions</h2>
-          <p className={styles.sectionDesc}>Tailored neural paths for every agency scale.</p>
+          <span className={styles.sectionBadge}>Simple setup</span>
+          <h2 className={styles.sectionTitle}>Up and Running in Minutes</h2>
+          <p className={styles.sectionDesc}>No complicated setup. No IT team needed. Just sign up and go.</p>
         </motion.div>
-        <div className={styles.featureGrid}>
-          <FeatureCard 
-            icon={Globe} 
-            title="Global Delivery" 
-            desc="Scale your agency footprint across any border with localized AI nodes." 
-            href="/global-delivery"
+
+        <div className={styles.stepsGrid}>
+          <StepCard
+            num="1"
+            title="Create Your Account"
+            desc="Sign up with your email in under 60 seconds. No credit card, no contracts, no hassle."
           />
-          <FeatureCard 
-            icon={Zap} 
-            title="Rapid Onboarding" 
-            desc="Initialize new client nodes in seconds with automated contract generation." 
-            href="/onboarding"
+          <StepCard
+            num="2"
+            title="Add Your Clients & Projects"
+            desc="Import or manually add your clients, create projects, and assign tasks — it's as easy as filling a form."
+          />
+          <StepCard
+            num="3"
+            title="Send Invoices & Track Money"
+            desc="Generate professional invoices and track exactly what's paid, pending, or overdue — all in one place."
+          />
+          <StepCard
+            num="4"
+            title="Let AI Do the Heavy Lifting"
+            desc="Ask your built-in AI assistant for help with proposals, summaries, business advice, and more — available 24/7."
           />
         </div>
       </section>
 
-      <section id="pricing" className={styles.features}>
-        <motion.div 
+      {/* ── TESTIMONIALS ─────────────────────────────────────── */}
+      <section className={styles.testimonials}>
+        <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           className={styles.sectionHeader}
         >
-          <h2 className={styles.sectionTitle}>Neural Investment</h2>
-          <p className={styles.sectionDesc}>Simple pricing for infinite agency growth.</p>
+          <span className={styles.sectionBadge}>Real feedback</span>
+          <h2 className={styles.sectionTitle}>Agencies Love Aether OS</h2>
+          <p className={styles.sectionDesc}>Join hundreds of agency owners who run their business smarter every day.</p>
         </motion.div>
-        <div className={styles.featureGrid}>
-          <div className={styles.featureCard} style={{ border: '2px solid var(--accent-blue)', position: 'relative', display: 'flex', flexDirection: 'column', height: '100%' }}>
-            <div className={styles.badge} style={{ position: 'absolute', top: '1.5rem', right: '1.5rem', margin: 0 }}>PRO</div>
-            <h3 className={styles.featureTitle}>Founder Node</h3>
-            <div style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '1rem' }}>₦45,000<span style={{ fontSize: '1rem', opacity: 0.5 }}>/mo</span></div>
-            <p className={styles.featureText} style={{ flexGrow: 1, marginBottom: '2rem' }}>Everything you need to launch and automate your solo agency.</p>
-            <Link href="/signup" className={styles.primaryBtn} style={{ marginTop: 'auto', width: '100%', justifyContent: 'center' }}>Initialize Node</Link>
-          </div>
-          <div className={styles.featureCard} style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-            <h3 className={styles.featureTitle}>Agency Network</h3>
-            <div style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '1rem' }}>₦120,000<span style={{ fontSize: '1rem', opacity: 0.5 }}>/mo</span></div>
-            <p className={styles.featureText} style={{ flexGrow: 1, marginBottom: '2rem' }}>Connect up to 10 team members and unlimited client neural links.</p>
-            <Link href="/signup" className={styles.secondaryBtn} style={{ marginTop: 'auto', width: '100%', justifyContent: 'center' }}>Sync Network</Link>
-          </div>
+
+        <div className={styles.testimonialsGrid}>
+          <TestimonialCard
+            quote="I used to spend half my Monday morning chasing invoices and updating spreadsheets. Now it takes me 10 minutes. Aether OS is genuinely a game changer."
+            name="Chisom A."
+            role="Creative Director, Lagos"
+          />
+          <TestimonialCard
+            quote="The AI assistant alone is worth the subscription. It helped me write a full client proposal in under 5 minutes — something that used to take me hours."
+            name="David O."
+            role="Digital Marketing Agency Owner"
+          />
+          <TestimonialCard
+            quote="Finally a tool that actually makes sense for African agencies. The invoice tracking and client management is exactly what we needed."
+            name="Funke B."
+            role="Brand Consultant, Abuja"
+          />
         </div>
       </section>
 
+      {/* ── PRICING ──────────────────────────────────────────── */}
+      <section id="pricing" className={styles.pricing}>
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className={styles.sectionHeader}
+        >
+          <span className={styles.sectionBadge}>Pricing</span>
+          <h2 className={styles.sectionTitle}>Simple, Honest Pricing</h2>
+          <p className={styles.sectionDesc}>No hidden fees. No long-term contracts. Cancel anytime.</p>
+        </motion.div>
+
+        <div className={styles.pricingGrid}>
+          {/* Solo Plan */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className={styles.pricingCard}
+          >
+            <div className={styles.planName}>Solo</div>
+            <div className={styles.planDesc}>Perfect for freelancers and solo agency owners</div>
+            <div className={styles.planPrice}>
+              ₦45,000
+              <span className={styles.planPer}>/month</span>
+            </div>
+            <ul className={styles.planFeatures}>
+              {[
+                'Unlimited clients & projects',
+                'Invoice creation & tracking',
+                'AI business assistant',
+                'Task management board',
+                'Revenue dashboard',
+                'Email support',
+              ].map((f, i) => (
+                <li key={i} className={styles.planFeature}>
+                  <CheckCircle size={15} color="#22c55e" />
+                  <span>{f}</span>
+                </li>
+              ))}
+            </ul>
+            <Link href="/signup" className={styles.primaryBtn} style={{ width: '100%', justifyContent: 'center', marginTop: 'auto' }}>
+              Get Started <ArrowRight size={16} />
+            </Link>
+          </motion.div>
+
+          {/* Team Plan */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className={`${styles.pricingCard} ${styles.pricingCardFeatured}`}
+          >
+            <div className={styles.featuredBadge}>Most Popular</div>
+            <div className={styles.planName}>Team</div>
+            <div className={styles.planDesc}>For growing agencies with a team</div>
+            <div className={styles.planPrice}>
+              ₦120,000
+              <span className={styles.planPer}>/month</span>
+            </div>
+            <ul className={styles.planFeatures}>
+              {[
+                'Everything in Solo',
+                'Up to 10 team members',
+                'Role-based access control',
+                'Priority AI assistant',
+                'Advanced revenue reports',
+                'Client portal access',
+                'Priority support',
+              ].map((f, i) => (
+                <li key={i} className={styles.planFeature}>
+                  <CheckCircle size={15} color="#22c55e" />
+                  <span>{f}</span>
+                </li>
+              ))}
+            </ul>
+            <Link href="/signup" className={styles.primaryBtn} style={{ width: '100%', justifyContent: 'center', marginTop: 'auto' }}>
+              Get Started <ArrowRight size={16} />
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── FAQ ──────────────────────────────────────────────── */}
+      <section className={styles.faq}>
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className={styles.sectionHeader}
+        >
+          <span className={styles.sectionBadge}>FAQ</span>
+          <h2 className={styles.sectionTitle}>Questions? We've Got Answers</h2>
+        </motion.div>
+
+        <div className={styles.faqList}>
+          {faqs.map((faq, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.05 }}
+              className={styles.faqItem}
+            >
+              <button
+                className={styles.faqQuestion}
+                onClick={() => setOpenFaq(openFaq === i ? null : i)}
+              >
+                <span>{faq.q}</span>
+                <ChevronRight
+                  size={18}
+                  className={styles.faqChevron}
+                  style={{ transform: openFaq === i ? 'rotate(90deg)' : 'rotate(0deg)' }}
+                />
+              </button>
+              {openFaq === i && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className={styles.faqAnswer}
+                >
+                  {faq.a}
+                </motion.div>
+              )}
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── FINAL CTA ─────────────────────────────────────────── */}
+      <section className={styles.finalCta}>
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className={styles.finalCtaInner}
+        >
+          <h2 className={styles.finalCtaTitle}>Ready to Run a Smarter Agency?</h2>
+          <p className={styles.finalCtaDesc}>
+            Join hundreds of agency owners who save time, earn more, and stress less with Aether OS.
+          </p>
+          <Link href="/signup" className={styles.primaryBtn}>
+            Start for Free Today <ChevronRight size={18} />
+          </Link>
+          <p className={styles.heroNote}>No credit card required · Cancel anytime</p>
+        </motion.div>
+      </section>
+
+      {/* ── FOOTER ───────────────────────────────────────────── */}
       <footer className={styles.footer}>
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           className={styles.logoArea}
         >
-          <Logo href="/" iconSize={38} showSlogan={false} />
-          <span>&copy; 2026 Aether Intelligence Systems. All nodes operational.</span>
+          <Logo href="/" iconSize={36} showSlogan={false} />
+          <span>&copy; 2026 Aether OS. All rights reserved.</span>
         </motion.div>
         <div className={styles.footerLinks}>
-          <a href="#" className={styles.navLink}>Neural Policy</a>
-          <a href="#" className={styles.navLink}>Terminals</a>
-          <a href="#" className={styles.navLink}>Link Core</a>
+          <a href="#" className={styles.navLink}>Privacy Policy</a>
+          <a href="#" className={styles.navLink}>Terms of Use</a>
+          <a href="#" className={styles.navLink}>Contact</a>
         </div>
       </footer>
+
     </main>
   );
 }

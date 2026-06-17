@@ -53,7 +53,7 @@ export default function Dashboard() {
             Welcome back, {userName}
             <Sparkles size={24} className={styles.sparkleIcon} />
           </motion.h1>
-          <p className={styles.subtitle}>Your agency nodes are initializing. No active tasks detected.</p>
+          <p className={styles.subtitle}>Your workspace is ready. Add your first client or project to get started.</p>
         </div>
         <div className={styles.statusBadge}>
           <Zap size={14} style={{ color: '#fbbf24' }} />
@@ -73,9 +73,9 @@ export default function Dashboard() {
           <div className={styles.projectionCard}>
             <h3 className={styles.cardTitle}>
               <Target size={20} style={{ color: '#60a5fa' }} />
-              Strategic Neural Projection
+              Revenue Overview
             </h3>
-            <p className={styles.cardDesc}>No data points available for projection. Initialize your first client to see growth curves.</p>
+            <p className={styles.cardDesc}>No data yet. Add your first client and invoice to start seeing your revenue grow.</p>
             <div style={{ height: '300px' }}>
               <VisualElement3D />
             </div>
@@ -106,8 +106,8 @@ export default function Dashboard() {
 
         <div className={styles.rightCol}>
           <div className={styles.actionCard}>
-            <h3 className={styles.actionTitle}>Initialize New Node</h3>
-            <p className={styles.actionDesc}>Ready to scale your agency operations further?</p>
+            <h3 className={styles.actionTitle}>Start a New Project</h3>
+            <p className={styles.actionDesc}>Ready to take on more work? Create a project and get organised.</p>
             <Link href="/tasks" className={styles.actionBtn}>
               Launch Project <ArrowUpRight size={18} />
             </Link>
@@ -129,7 +129,7 @@ export default function Dashboard() {
                 </div>
               )) : (
                 <div style={{ opacity: 0.5, fontSize: '0.85rem' }}>
-                  No team members linked to this node.
+                  No team members added yet.
                 </div>
               )}
             </div>

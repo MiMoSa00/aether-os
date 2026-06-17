@@ -1,0 +1,354 @@
+.container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header {
+  margin-bottom: 3rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  font-style: italic;
+  margin-bottom: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(
+    120deg,
+    #ffffff 0%,
+    #00f0ff 25%,
+    #a78bfa 50%,
+    #f43f5e 75%,
+    #ffffff 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shine 5s linear infinite;
+  filter: drop-shadow(0 0 1px rgba(255, 255, 255, 0.2));
+}
+
+@keyframes shine {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+.sparkleIcon {
+  color: #00f0ff;
+  animation: sparkleAnim 3s ease-in-out infinite;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+@keyframes sparkleAnim {
+  0%, 100% { transform: scale(1) rotate(0deg); filter: drop-shadow(0 0 2px rgba(0, 240, 255, 0.4)); opacity: 0.8; }
+  50% { transform: scale(1.25) rotate(180deg); filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.9)); opacity: 1; }
+}
+
+.subtitle {
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 500;
+}
+
+.statusBadge {
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.4);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.statCard {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1.5rem;
+  border-radius: 24px;
+  transition: all 0.2s ease;
+}
+
+.statCard:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.statHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.statIcon {
+  padding: 0.75rem;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.delta {
+  padding: 0.25rem 0.5rem;
+  border-radius: 100px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: rgba(34, 197, 94, 0.1);
+  color: #4ade80;
+}
+
+.statLabel {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.statValue {
+  font-size: 2rem;
+  font-weight: 800;
+  color: white;
+}
+
+.mainGrid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+}
+
+@media (max-width: 1024px) {
+  .mainGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.leftCol {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.projectionCard {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 32px;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.projectionCard::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 200px;
+  height: 200px;
+  background: rgba(37, 99, 235, 0.1);
+  filter: blur(80px);
+  border-radius: 50%;
+}
+
+.cardTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.cardDesc {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.85rem;
+  margin-bottom: 1.5rem;
+  max-width: 400px;
+}
+
+.activityCard {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 32px;
+  padding: 2rem;
+}
+
+.activityList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.activityItem {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 16px;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.activityItem:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.activityIcon {
+  width: 40px;
+  height: 40px;
+  background: rgba(37, 99, 235, 0.1);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #60a5fa;
+}
+
+.activityInfo {
+  flex: 1;
+}
+
+.activityTitle {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: white;
+}
+
+.activityMeta {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.activityValue {
+  font-weight: 800;
+  color: white;
+}
+
+.rightCol {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.actionCard {
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  border-radius: 32px;
+  padding: 2rem;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.actionTitle {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+}
+
+.actionDesc {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 2rem;
+}
+
+.actionBtn {
+  width: 100%;
+  padding: 1.25rem;
+  background: white;
+  color: #2563eb;
+  border: none;
+  border-radius: 16px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.actionBtn:hover {
+  background: #f8fafc;
+  transform: translateY(-2px);
+}
+
+.teamCard {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 32px;
+  padding: 2rem;
+}
+
+.teamList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.teamMember {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.memberAvatar {
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  position: relative;
+}
+
+.statusIndicator {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 12px;
+  height: 12px;
+  border: 2px solid #050505;
+  border-radius: 50%;
+}
+
+.online { background: #22c55e; }
+.offline { background: #64748b; }
+
+.memberName {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: white;
+}
+
+.memberRole {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+}

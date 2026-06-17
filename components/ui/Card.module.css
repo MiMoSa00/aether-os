@@ -1,0 +1,14 @@
+.card {
+  background: var(--surface-glass);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: all var(--transition-normal);
+}
+
+.card:hover {
+  background: var(--surface-glass-hover);
+  border-color: rgba(255, 255, 255, 0.2);
+}

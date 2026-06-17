@@ -1,0 +1,183 @@
+.container {
+  width: 100%;
+  padding: var(--page-content-padding, 2rem);
+}
+
+.actionRow {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 2rem;
+}
+
+.clientsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.clientCard {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--surface-border);
+  border-radius: 24px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.clientCard:hover {
+  background: var(--surface-glass-hover);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+}
+
+.avatar {
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+  border-radius: 15px;
+  flex-shrink: 0;
+}
+
+.activeBadge {
+  padding: 0.25rem 0.75rem;
+  background: rgba(34, 197, 94, 0.1);
+  color: #22c55e;
+  border-radius: 100px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.clientName {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.clientRole {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.detailsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.detailItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.7);
+  min-width: 0;
+}
+
+.detailIcon {
+  flex-shrink: 0;
+}
+
+.detailText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.formCard {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 2rem;
+  border-radius: 24px;
+  margin-bottom: 2.5rem;
+  border: 1px solid var(--surface-border);
+  max-width: 500px;
+  width: 100%;
+}
+
+.formTitle {
+  margin-bottom: 1.5rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.formGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.formInput {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--surface-border);
+  color: white;
+  padding: 0.75rem;
+  border-radius: 12px;
+  outline: none;
+  font-size: 0.95rem;
+  transition: border-color var(--transition-fast);
+}
+
+.formInput:focus {
+  border-color: var(--accent-blue);
+}
+
+.formActions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.submitBtn {
+  flex: 1;
+  padding: 0.75rem;
+  background: var(--accent-blue);
+  color: #050505;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.cancelBtn {
+  padding: 0.75rem 1.5rem;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.5);
+  border: none;
+  cursor: pointer;
+}
+
+.emptyState {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 4rem 1.5rem;
+  opacity: 0.3;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: var(--page-content-padding, 1rem 0.5rem);
+  }
+}
+
+@media (max-width: 480px) {
+  .clientsGrid {
+    grid-template-columns: 1fr;
+  }
+}

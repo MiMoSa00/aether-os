@@ -1,0 +1,111 @@
+.board {
+  padding: 1rem 0;
+  overflow-x: auto;
+}
+
+.columnsContainer {
+  display: flex;
+  gap: 1.5rem;
+  min-height: calc(100vh - 250px);
+}
+
+@media (max-width: 768px) {
+  .columnsContainer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+    min-height: auto;
+  }
+  
+  .column {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+}
+
+.column {
+  background: var(--surface-glass);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-lg);
+  width: 320px;
+  min-width: 320px;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.columnHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding: 0 0.5rem;
+}
+
+.columnTitle {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.taskCount {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.taskList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+.task {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  cursor: grab;
+  transition: all var(--transition-fast);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.task:hover {
+  background: var(--surface-glass-hover);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.taskContent {
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+.taskFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.priority {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+}
+
+.high { background: rgba(248, 113, 113, 0.1); color: #f87171; }
+.medium { background: rgba(251, 191, 36, 0.1); color: #fbbf24; }
+.low { background: rgba(74, 222, 128, 0.1); color: #4ade80; }

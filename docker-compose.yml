@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  # Ollama - Local Model Server
+  ollama:
+    image: ollama/ollama:latest
+    container_name: aether-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    restart: always
+
+  # ChromaDB - Vector Database for RAG
+  chromadb:
+    image: chromadb/chroma:latest
+    container_name: aether-chroma
+    ports:
+      - "8000:8000"
+    volumes:
+      - chroma_data:/chroma/data
+    restart: always
+
+  # SearXNG - Self-hosted Search Engine
+  searxng:
+    image: searxng/searxng:latest
+    container_name: aether-search
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./searxng:/etc/searxng
+    restart: always
+
+  # Aether Intelligence Backend (Node.js)
+  aether-backend:
+    build: 
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: aether-brain
+    ports:
+      - "3005:3005"
+    environment:
+      - OLLAMA_HOST=http://ollama:11434
+      - CHROMA_HOST=http://chromadb:8000
+      - SEARXNG_HOST=http://searxng:8080
+      - PORT=3005
+    depends_on:
+      - ollama
+      - chromadb
+      - searxng
+    restart: always
+
+volumes:
+  ollama_data:
+  chroma_data:

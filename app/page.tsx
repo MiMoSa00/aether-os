@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
 import {
   Bot, Zap, Shield, ChevronRight, Globe, Layers, BarChart3,
   CheckCircle, Users, FileText, TrendingUp, Star, ArrowRight,
@@ -11,6 +11,79 @@ import {
 import { VisualElement3D } from '@/components/Visuals/VisualElement3D';
 import { Logo } from '@/components/Logo/Logo';
 import styles from './page.module.css';
+
+/* ─── Count-up hook ────────────────────────────────────────────
+   Counts from 0 → target over `duration` ms once `trigger` is true
+──────────────────────────────────────────────────────────────── */
+function useCountUp(target: number, duration = 1800, trigger = false) {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    if (!trigger) return;
+    let start = 0;
+    const startTime = performance.now();
+
+    const step = (now: number) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      // easeOutExpo feel
+      const eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+      const current = Math.round(eased * target);
+      setCount(current);
+      if (progress < 1) requestAnimationFrame(step);
+    };
+
+    requestAnimationFrame(step);
+  }, [trigger, target, duration]);
+
+  return count;
+}
+
+/* ─── Animated stat item ───────────────────────────────────────
+   prefix  e.g. "₦"
+   target  the raw number  e.g. 2000
+   suffix  e.g. "B+"  or "+"  or " hrs"
+──────────────────────────────────────────────────────────────── */
+function CountUpStat({
+  icon: Icon, prefix = '', target, suffix = '', label, inView
+}: {
+  icon: React.ElementType; prefix?: string; target: number;
+  suffix?: string; label: string; inView: boolean;
+}) {
+  const count = useCountUp(target, 1800, inView);
+  return (
+    <div className={styles.proofItem}>
+      <Icon size={20} className={styles.proofIcon} />
+      <div className={styles.proofStat}>
+        {prefix}{count.toLocaleString()}{suffix}
+      </div>
+      <div className={styles.proofLabel}>{label}</div>
+    </div>
+  );
+}
+
+/* ─── Social Proof Bar ────────────────────────────────────────
+   Extracted as its own component so hooks work correctly
+──────────────────────────────────────────────────────────────── */
+function ProofBar() {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, margin: '-80px' });
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      viewport={{ once: true }}
+      className={styles.proofInner}
+    >
+      <CountUpStat icon={Users}      target={500}   suffix="+"    label="Agencies Onboard" inView={inView} />
+      <CountUpStat icon={DollarSign} prefix="₦"     target={2}    suffix="B+"   label="Revenue Tracked"  inView={inView} />
+      <CountUpStat icon={FileText}   target={10000} suffix="+"    label="Invoices Sent"     inView={inView} />
+      <CountUpStat icon={Clock}      target={5}     suffix=" hrs" label="Saved Per Week"    inView={inView} />
+    </motion.div>
+  );
+}
 
 /* ─── Reusable Feature Card ───────────────────────────────────── */
 const FeatureCard = ({ icon: Icon, title, desc, href, color = 'blue' }: any) => {
@@ -172,25 +245,7 @@ export default function LandingPage() {
 
       {/* ── SOCIAL PROOF BAR ─────────────────────────────────── */}
       <section className={styles.proofBar}>
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className={styles.proofInner}
-        >
-          {[
-            { icon: Users, stat: '500+', label: 'Agencies Onboard' },
-            { icon: DollarSign, stat: '₦2B+', label: 'Revenue Tracked' },
-            { icon: FileText, stat: '10,000+', label: 'Invoices Sent' },
-            { icon: Clock, stat: '5 hrs', label: 'Saved Per Week' },
-          ].map(({ icon: Icon, stat, label }, i) => (
-            <div key={i} className={styles.proofItem}>
-              <Icon size={20} className={styles.proofIcon} />
-              <div className={styles.proofStat}>{stat}</div>
-              <div className={styles.proofLabel}>{label}</div>
-            </div>
-          ))}
-        </motion.div>
+        <ProofBar />
       </section>
 
       {/* ── FEATURES ─────────────────────────────────────────── */}

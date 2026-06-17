@@ -49,6 +49,7 @@
 html {
   /* Prevent horizontal overflow globally */
   overflow-x: hidden;
+  max-width: 100%;
 }
 
 body {
@@ -57,6 +58,9 @@ body {
   font-family: var(--font-inter, var(--font-geist-sans), sans-serif);
   min-height: 100vh;
   overflow-x: hidden;
+  max-width: 100%;
+  width: 100%;
+  position: relative;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

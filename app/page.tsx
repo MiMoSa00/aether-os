@@ -37,7 +37,7 @@ export default function LandingPage() {
       <nav className={styles.nav}>
         <div className={styles.logoArea}>
           {/* use shared Logo component for consistent styling */}
-          <Logo href="/" iconSize={50} />
+          <Logo href="/" iconSize={50} centered={true} />
         </div>
         <div className={styles.navLinks}>
           <a href="#features" className={styles.navLink}>Features</a>
@@ -97,7 +97,7 @@ export default function LandingPage() {
         </motion.div>
         <div className={styles.featureGrid}>
           {[
-            { icon: Bot, title: "Local AI Intelligence", desc: "Self-hosted Llama 3 models process your data privately without cloud latency or costs.", href: "/agent" },
+            { icon: Bot, title: "Claude AI Intelligence", desc: "Claude-powered models analyze your data with industry-leading accuracy, speed, and reasoning.", href: "/agent" },
             { icon: BarChart3, title: "Revenue Projection", desc: "Neural forecasts analyze your pipeline and predict growth with high-fidelity accuracy.", href: "/finance" },
             { icon: Layers, title: "Dynamic Kanban", desc: "Fluid project nodes that move with your agency's velocity and priority.", href: "/tasks" },
             { icon: Shield, title: "Secure Ledger", desc: "Enterprise-grade invoice and contract management with military-level encryption.", href: "/invoices" }

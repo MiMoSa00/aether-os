@@ -3,10 +3,11 @@
 import React from 'react';
 import { Logo } from '@/components/Logo/Logo';
 import styles from './Sidebar.module.css';
-import { LayoutDashboard, FolderKanban, FileText, Users, Bot, X, CreditCard, Shield } from 'lucide-react';
+import { LayoutDashboard, FolderKanban, FileText, Users, Bot, X, CreditCard, Shield, LogOut } from 'lucide-react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useData } from '@/context/DataContext';
+import { createClient } from '@/utils/supabase/client';
 
 const navItems = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
@@ -18,6 +19,7 @@ const navItems = [
 
 export function Sidebar({ isOpen, onClose }: { isOpen?: boolean; onClose?: () => void }) {
   const pathname = usePathname();
+  const router = useRouter();
   const { user } = useData();
   const userName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'User';
 
@@ -45,6 +47,13 @@ export function Sidebar({ isOpen, onClose }: { isOpen?: boolean; onClose?: () =>
   };
   const initials = getInitials();
 
+  const handleLogout = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.push('/login');
+    router.refresh();
+  };
+
   return (
     <aside className={`${styles.sidebar} ${isOpen ? styles.sidebarOpen : ''}`}>
       <div className={styles.logo}>
@@ -52,12 +61,14 @@ export function Sidebar({ isOpen, onClose }: { isOpen?: boolean; onClose?: () =>
         <button 
           onClick={onClose}
           style={{ 
-            display: 'none', 
             background: 'transparent', 
             border: 'none', 
             color: 'white', 
             marginLeft: 'auto',
-            cursor: 'pointer'
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
           }}
           className={styles.mobileOnly}
         >
@@ -73,6 +84,7 @@ export function Sidebar({ isOpen, onClose }: { isOpen?: boolean; onClose?: () =>
               key={item.name} 
               href={item.href}
               className={`${styles.navItem} ${isActive ? styles.active : ''}`}
+              onClick={onClose}
             >
               <item.icon size={20} />
               {item.name}
@@ -81,14 +93,20 @@ export function Sidebar({ isOpen, onClose }: { isOpen?: boolean; onClose?: () =>
         })}
       </nav>
 
-      <div className={styles.userProfile}>
-        <div className={styles.avatar}>
-          <span className={styles.avatarInitials}>{initials}</span>
+      <div className={styles.userSection}>
+        <div className={styles.userProfile}>
+          <div className={styles.avatar}>
+            <span className={styles.avatarInitials}>{initials}</span>
+          </div>
+          <div className={styles.userInfo}>
+            <span className={styles.userName}>{userName}</span>
+            <span className={styles.userRole}>Agency Admin</span>
+          </div>
         </div>
-        <div className={styles.userInfo}>
-          <span className={styles.userName}>{userName}</span>
-          <span className={styles.userRole}>Agency Admin</span>
-        </div>
+        <button className={styles.logoutBtn} onClick={handleLogout}>
+          <LogOut size={16} />
+          <span>Log Out</span>
+        </button>
       </div>
     </aside>
   );

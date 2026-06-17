@@ -93,34 +93,71 @@
   margin-left: 0.25rem;
 }
 
+/* The wrapper IS the styled box for all fields */
 .inputWrapper {
-  position: relative;
-}
-
-.inputIcon {
-  position: absolute;
-  left: 1.25rem;
-  top: 50%;
-  transform: translateY(-50%);
-  color: rgba(255, 255, 255, 0.3);
-}
-
-.input {
-  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 0.85rem 1.25rem 0.85rem 3.25rem;
   border-radius: 14px;
-  color: white;
-  font-size: 0.95rem;
+  padding: 0 1.25rem;
   transition: all 0.2s ease;
 }
 
-.input:focus {
-  outline: none;
+.inputWrapper:focus-within {
   border-color: #2563eb;
   background: rgba(255, 255, 255, 0.08);
   box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+/* Left icon (Mail, Lock, User) */
+.inputIcon {
+  color: rgba(255, 255, 255, 0.3);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+/* The actual <input> — transparent, takes remaining space */
+.input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 0.85rem 0;
+  color: white;
+  font-size: 0.95rem;
+  font-family: inherit;
+  min-width: 0;
+}
+
+.input::placeholder {
+  color: rgba(255, 255, 255, 0.25);
+}
+
+/* inputWithToggle: no extra styles needed — eye button sits naturally on the right */
+.inputWithToggle {
+  /* intentionally empty — flex row handles layout */
+}
+
+/* Eye toggle sits at far-right inside the flex box */
+.eyeToggle {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.35);
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s ease;
+  line-height: 0;
+}
+
+.eyeToggle:hover {
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .submitBtn {

@@ -26,15 +26,10 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
     <div className={styles.layout}>
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
       
+      {/* Overlay: sits above sidebar (z-index 1001) so clicking it closes the sidebar */}
       {isSidebarOpen && (
         <div 
-          style={{
-            position: 'fixed',
-            inset: 0,
-            background: 'rgba(0,0,0,0.5)',
-            zIndex: 999,
-            backdropFilter: 'blur(4px)'
-          }}
+          className={styles.overlay}
           onClick={() => setIsSidebarOpen(false)}
         />
       )}

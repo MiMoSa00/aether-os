@@ -1,11 +1,22 @@
 'use client';
 
 import { ModulePage } from '@/components/Layout/ModulePage';
-import { Settings, User, Shield, Zap, Globe, Bell, LogOut } from 'lucide-react';
+import { Settings, User, Shield, Zap, LogOut } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { createClient } from '@/utils/supabase/client';
 
 import styles from './settings.module.css';
 
 export default function SettingsPage() {
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.push('/login');
+    router.refresh();
+  };
+
   const sections = [
     {
       title: 'Neural Identity',
@@ -29,9 +40,9 @@ export default function SettingsPage() {
       title: 'A.I. Core Configuration',
       icon: Zap,
       items: [
-        { label: 'Language Model', value: 'Llama 3.1 8B' },
+        { label: 'Language Model', value: 'Claude Sonnet 4.6' },
         { label: 'Neural Temperature', value: '0.7 (Optimal)' },
-        { label: 'Context Window', value: '128k Tokens' },
+        { label: 'Context Window', value: '200k Tokens' },
       ]
     }
   ];
@@ -61,7 +72,7 @@ export default function SettingsPage() {
             </div>
           ))}
 
-          <button className={styles.logoutBtn}>
+          <button className={styles.logoutBtn} onClick={handleLogout}>
             <LogOut size={20} /> Terminate Secure Session
           </button>
         </div>

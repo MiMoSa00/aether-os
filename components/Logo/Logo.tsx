@@ -8,9 +8,10 @@ interface LogoProps {
   href?: string;
   iconSize?: number;
   showSlogan?: boolean;
+  centered?: boolean;
 }
 
-export function Logo({ href = '/', iconSize = 64, showSlogan = true }: LogoProps) {
+export function Logo({ href = '/', iconSize = 64, showSlogan = true, centered = false }: LogoProps) {
   return (
     <Link href={href} style={{ textDecoration: 'none', color: 'inherit' }}>
       <motion.div
@@ -19,7 +20,7 @@ export function Logo({ href = '/', iconSize = 64, showSlogan = true }: LogoProps
         style={{
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'flex-start',
+          alignItems: centered ? 'center' : 'flex-start',
           gap: '0.3rem',
         }}
       >
@@ -94,7 +95,7 @@ export function Logo({ href = '/', iconSize = 64, showSlogan = true }: LogoProps
           </span>
         </div>
 
-        {/* Slogan below the full row — aligned from the left */}
+        {/* Slogan below the full row */}
         {showSlogan && (
           <span
             style={{
@@ -104,7 +105,8 @@ export function Logo({ href = '/', iconSize = 64, showSlogan = true }: LogoProps
               color: 'rgba(180, 200, 255, 0.6)',
               fontWeight: 600,
               whiteSpace: 'nowrap',
-              paddingLeft: '4px',
+              paddingLeft: centered ? '0' : '4px',
+              textAlign: centered ? 'center' : 'left',
             }}
           >
             Your Agency&apos;s Neural Core

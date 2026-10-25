@@ -2,8 +2,9 @@
 
 import { ModulePage } from '@/components/Layout/ModulePage';
 import { Users, Plus, Mail, Phone, Shield } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useData } from '@/context/DataContext';
+import { ToastContainer, ToastData, ToastVariant } from '@/components/Toast/Toast';
 
 import styles from './clients.module.css';
 
@@ -15,6 +16,19 @@ export default function ClientsPage() {
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [selectedClientForInvite, setSelectedClientForInvite] = useState<any>(null);
   const [copied, setCopied] = useState(false);
+  const [sending, setSending] = useState(false);
+
+  // Toast state
+  const [toasts, setToasts] = useState<ToastData[]>([]);
+
+  const pushToast = useCallback((variant: ToastVariant, title: string, message?: string) => {
+    const id = `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+    setToasts((prev) => [...prev, { id, variant, title, message, duration: 4500 }]);
+  }, []);
+
+  const dismissToast = useCallback((id: string) => {
+    setToasts((prev) => prev.filter((t) => t.id !== id));
+  }, []);
 
   const parseAmount = (amt: string) => parseFloat(amt.replace(/[^0-9.-]+/g, "")) || 0;
 
@@ -27,12 +41,51 @@ export default function ClientsPage() {
     }
   };
 
+  const buildInviteUrl = (clientName: string, clientEmail: string) => {
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || (typeof window !== 'undefined' ? window.location.origin : '');
+    return `${baseUrl}/client-portal/accept-invite?client=${encodeURIComponent(clientName)}&email=${encodeURIComponent(clientEmail)}`;
+  };
+
+  const handleSendInvite = async () => {
+    if (!selectedClientForInvite) return;
+    setSending(true);
+
+    const inviteUrl = buildInviteUrl(selectedClientForInvite.name, selectedClientForInvite.email);
+
+    try {
+      const res = await fetch('/api/invite-client', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          clientName: selectedClientForInvite.name,
+          clientEmail: selectedClientForInvite.email,
+          inviteUrl,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        pushToast('success', 'Invite sent', `Invitation delivered to ${selectedClientForInvite.email}`);
+        setShowInviteModal(false);
+      } else {
+        pushToast('error', 'Could not send invite', data.error || 'Please try again or copy the link manually.');
+      }
+    } catch (err: any) {
+      pushToast('error', 'Network error', err?.message || 'Could not reach the invite service.');
+    } finally {
+      setSending(false);
+    }
+  };
+
   return (
     <ModulePage 
       title="Clients" 
       subtitle="Manage your agency's client relationships and total billings." 
       icon={Users}
     >
+      <ToastContainer toasts={toasts} onDismiss={dismissToast} />
+
       <div className={styles.container}>
         <div className={styles.actionRow}>
           <button 
@@ -178,7 +231,7 @@ export default function ClientsPage() {
           justifyContent: 'center',
           zIndex: 2000,
           padding: '1.5rem'
-        }} onClick={() => setShowInviteModal(false)}>
+        }} onClick={() => !sending && setShowInviteModal(false)}>
           <div style={{
             width: '100%',
             maxWidth: '520px',
@@ -197,7 +250,11 @@ export default function ClientsPage() {
                   Send this link to the client to set their password and access their dedicated portal.
                 </p>
               </div>
-              <button onClick={() => setShowInviteModal(false)} style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '1.2rem' }}>
+              <button 
+                onClick={() => !sending && setShowInviteModal(false)} 
+                disabled={sending}
+                style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: sending ? 'not-allowed' : 'pointer', fontSize: '1.2rem' }}
+              >
                 ✕
               </button>
             </div>
@@ -230,7 +287,7 @@ export default function ClientsPage() {
                   <input 
                     type="text" 
                     readOnly
-                    value={typeof window !== 'undefined' ? `${window.location.origin}/client-portal/accept-invite?client=${encodeURIComponent(selectedClientForInvite.name)}&email=${encodeURIComponent(selectedClientForInvite.email)}` : ''} 
+                    value={buildInviteUrl(selectedClientForInvite.name, selectedClientForInvite.email)}
                     style={{
                       flex: 1,
                       padding: '0.75rem 1rem',
@@ -244,9 +301,10 @@ export default function ClientsPage() {
                   />
                   <button 
                     onClick={() => {
-                      const url = `${window.location.origin}/client-portal/accept-invite?client=${encodeURIComponent(selectedClientForInvite.name)}&email=${encodeURIComponent(selectedClientForInvite.email)}`;
+                      const url = buildInviteUrl(selectedClientForInvite.name, selectedClientForInvite.email);
                       navigator.clipboard?.writeText(url);
                       setCopied(true);
+                      pushToast('info', 'Link copied', 'Share it with the client manually if needed.');
                       setTimeout(() => setCopied(false), 3000);
                     }}
                     style={{
@@ -277,7 +335,7 @@ export default function ClientsPage() {
                 🔒 <strong>Security Model:</strong> Clients cannot register publicly. Only invited partners with valid links can establish a portal password and view their project deliverables, contracts, and invoices.
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.75rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.75rem', flexWrap: 'wrap', gap: '0.75rem' }}>
                 <a 
                   href="/client-portal"
                   target="_blank"
@@ -295,6 +353,7 @@ export default function ClientsPage() {
                 <div style={{ display: 'flex', gap: '0.5rem' }}>
                   <button 
                     onClick={() => setShowInviteModal(false)}
+                    disabled={sending}
                     style={{
                       padding: '0.65rem 1.15rem',
                       background: 'transparent',
@@ -303,16 +362,15 @@ export default function ClientsPage() {
                       color: 'var(--text-primary)',
                       fontSize: '0.84rem',
                       fontWeight: 600,
-                      cursor: 'pointer'
+                      cursor: sending ? 'not-allowed' : 'pointer',
+                      opacity: sending ? 0.5 : 1
                     }}
                   >
                     Close
                   </button>
                   <button 
-                    onClick={() => {
-                      alert(`Official invite email dispatched to ${selectedClientForInvite.email}!`);
-                      setShowInviteModal(false);
-                    }}
+                    onClick={handleSendInvite}
+                    disabled={sending}
                     style={{
                       padding: '0.65rem 1.25rem',
                       background: '#f6c445',
@@ -321,10 +379,14 @@ export default function ClientsPage() {
                       borderRadius: '8px',
                       fontSize: '0.84rem',
                       fontWeight: 800,
-                      cursor: 'pointer'
+                      cursor: sending ? 'not-allowed' : 'pointer',
+                      opacity: sending ? 0.7 : 1,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.4rem'
                     }}
                   >
-                    Send Email Invite
+                    {sending ? 'Sending...' : 'Send Email Invite'}
                   </button>
                 </div>
               </div>

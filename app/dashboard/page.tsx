@@ -1,296 +1,266 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import Link from 'next/link';
-import { VisualElement3D } from '@/components/Visuals/VisualElement3D';
+import { SalesRevenueChart } from '@/components/Visuals/SalesRevenueChart';
 import { motion } from 'framer-motion';
-import { 
-  TrendingUp, Users, CheckCircle, Clock, Zap, Target, 
-  ArrowUpRight, Sparkles, UserPlus, FilePlus, Receipt, 
-  Wallet, Play, ArrowRight, KanbanSquare 
+import {
+  TrendingUp, Users, CheckCircle, Clock, Zap, ArrowUpRight,
+  Sparkles, UserPlus, FilePlus, Receipt, Wallet, ArrowRight,
+  KanbanSquare, BarChart3, Circle, AlertCircle, CheckCircle2,
+  Plus, MessageSquare, Info
 } from 'lucide-react';
 import { useData } from '@/context/DataContext';
 import styles from './dashboard.module.css';
 
-const StatCard = ({ icon: Icon, label, value, delta, color }: any) => {
-  const colorMap: Record<string, string> = {
-    blue: '#60a5fa',
-    purple: '#a78bfa',
-    green: '#34d399',
-    orange: '#fb923c',
-  };
+/* ─── KPI Card Component ────────────────────────────── */
+interface KPICardProps {
+  label: string;
+  value: string;
+  delay?: number;
+}
 
+const KPICard = ({ label, value, delay = 0 }: KPICardProps) => {
   return (
-    <div className={styles.statCard}>
-      <div className={styles.statHeader}>
-        <div className={styles.statIcon} style={{ background: `${colorMap[color]}12`, border: `1px solid ${colorMap[color]}20` }}>
-          <Icon size={20} style={{ color: colorMap[color] }} />
-        </div>
-        {delta && (
-          <div className={styles.delta}>
-            <ArrowUpRight size={12} />
-            {delta}
-          </div>
-        )}
-      </div>
-      <div className={styles.statLabel}>{label}</div>
-      <div className={styles.statValue}>{value}</div>
-    </div>
+    <motion.div
+      className={styles.statCard}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.45, delay }}
+    >
+      <span className={styles.kpiLabel}>{label}</span>
+      <span className={styles.kpiValue}>{value}</span>
+    </motion.div>
   );
 };
 
 export default function Dashboard() {
-  const { clients, tasks, columns, invoices, timeEntries, expenses, payments, user } = useData();
+  const { clients, tasks, columns, invoices, timeEntries, expenses, payments, user, addInvoice, addNotification } = useData();
 
-  // Helper to parse currency amount
   const parseAmount = (amt: string) => parseFloat(amt.replace(/[^0-9.-]+/g, '')) || 0;
 
-  // Derive first name
-  const fullName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'User';
-  const userName = fullName.split(' ')[0];
+  // Dynamic time-of-day greeting for the Director
+  const greetingText = useMemo(() => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good morning, Director.';
+    if (hour < 17) return 'Good afternoon, Director.';
+    return 'Good evening, Director.';
+  }, []);
 
-  // Dynamic calculations
+  // Outstanding ₦ (Pending + Overdue invoices)
+  const outstandingAmount = useMemo(() => {
+    return invoices
+      .filter(inv => inv.status === 'Pending' || inv.status === 'Overdue')
+      .reduce((sum, inv) => sum + parseAmount(inv.amount), 0);
+  }, [invoices]);
+
+  // Revenue ₦ (Paid invoices)
   const totalInvoiced = useMemo(() => {
     const invoiceSum = invoices
       .filter(inv => inv.status === 'Paid')
       .reduce((sum, inv) => sum + parseAmount(inv.amount), 0);
-
     const paymentSum = (payments || [])
       .filter(pmt => pmt.status === 'success')
       .reduce((sum, pmt) => sum + (pmt.amount_ngn || 0), 0);
-
     return invoiceSum + paymentSum;
   }, [invoices, payments]);
 
-  const activeClientsCount = clients.length;
-
-  const completedTasksCount = useMemo(() => {
-    return columns['done']?.taskIds?.length || 0;
+  // Active Tasks count (todo + in-progress)
+  const activeTasksCount = useMemo(() => {
+    const todoCount = columns['todo']?.taskIds?.length || 0;
+    const progCount = columns['in-progress']?.taskIds?.length || 0;
+    return todoCount + progCount;
   }, [columns]);
 
-  const totalTasksCount = useMemo(() => {
-    return Object.values(columns).reduce((sum, col) => sum + (col.taskIds?.length || 0), 0);
-  }, [columns]);
-
-  const totalHours = useMemo(() => {
-    const secs = timeEntries.reduce((sum, entry) => sum + entry.duration, 0);
-    return (secs / 3600).toFixed(1);
+  // Billable Hours sum
+  const totalBillableHours = useMemo(() => {
+    const secs = timeEntries.filter(e => e.billable).reduce((sum, e) => sum + e.duration, 0);
+    return Math.round(secs / 3600);
   }, [timeEntries]);
 
-  // Unified activity stream
+  // Recent activity stream with icons
   const recentActivity = useMemo(() => {
     const list: any[] = [];
-    
-    invoices.forEach(inv => {
-      list.push({
-        title: `Invoice created for ${inv.client}`,
-        time: inv.date,
-        type: `Invoice (${inv.status})`,
-        amount: parseAmount(inv.amount),
-        isPositive: inv.status === 'Paid',
-        rawDate: new Date(inv.date),
-      });
-    });
-
-    expenses.forEach(exp => {
-      list.push({
-        title: `Expense: ${exp.name}`,
-        time: exp.date,
-        type: `Expense (${exp.category})`,
-        amount: -parseAmount(exp.amount),
-        isPositive: false,
-        rawDate: new Date(exp.date),
-      });
-    });
-
+    invoices.forEach(inv => list.push({
+      title: inv.status === 'Paid' ? `Invoice Paid: ${inv.client}` : `Invoice Sent: ${inv.id}`,
+      time: inv.date,
+      type: inv.status,
+      amount: parseAmount(inv.amount),
+      icon: inv.status === 'Paid' ? CheckCircle2 : Receipt,
+      isPositive: inv.status === 'Paid',
+      rawDate: new Date(inv.date),
+      meta: inv.status
+    }));
+    expenses.forEach(exp => list.push({
+      title: `Expense: ${exp.name}`,
+      time: exp.date,
+      type: `Expense`,
+      amount: -parseAmount(exp.amount),
+      icon: Wallet,
+      isPositive: false,
+      rawDate: new Date(exp.date),
+      meta: exp.category
+    }));
     timeEntries.forEach(entry => {
-      const hours = entry.duration / 3600;
-      const earnings = entry.billable ? hours * entry.rate : 0;
+      const hrs = entry.duration / 3600;
       list.push({
-        title: `Logged ${hours.toFixed(1)} hrs for ${entry.client}`,
+        title: `${hrs.toFixed(1)} hrs tracked for ${entry.client}`,
         time: entry.date,
-        type: 'Time Entry',
-        amount: earnings,
+        type: 'Time Logged',
+        amount: entry.billable ? hrs * entry.rate : 0,
+        icon: Clock,
         isPositive: true,
         rawDate: new Date(entry.date),
+        meta: entry.billable ? 'Billable' : 'Internal'
       });
     });
+    return list.sort((a, b) => b.rawDate.getTime() - a.rawDate.getTime()).slice(0, 4);
+  }, [invoices, expenses, timeEntries]);
 
-    (payments || []).forEach(pmt => {
-      if (pmt.status === 'success') {
-        const dateObj = new Date(pmt.created_at);
-        const formattedDate = isNaN(dateObj.getTime())
-          ? 'Just now'
-          : dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-        list.push({
-          title: `Subscription Payment: ${pmt.plan_id.toUpperCase()} Plan`,
-          time: formattedDate,
-          type: 'Subscription Payment',
-          amount: pmt.amount_ngn,
-          isPositive: true,
-          rawDate: isNaN(dateObj.getTime()) ? new Date() : dateObj,
-        });
-      }
-    });
+  // Generate dynamic AI suggestion prompts based on live client status
+  const aiSuggestions = useMemo(() => {
+    const list: Array<{ text: string; actionText?: string; onAction?: () => void }> = [];
 
-    return list
-      .sort((a, b) => b.rawDate.getTime() - a.rawDate.getTime())
-      .slice(0, 5);
-  }, [invoices, expenses, timeEntries, payments]);
+    // Prompt 1: Tracked hours to invoice conversion
+    const unbilledEntries = timeEntries.filter(e => e.billable);
+    if (unbilledEntries.length > 0) {
+      const totalUnbilledVal = unbilledEntries.reduce((sum, entry) => sum + (entry.duration / 3600) * entry.rate, 0);
+      const uniqueClient = unbilledEntries[0].client;
+      list.push({
+        text: `AI Suggestion: Draft invoice for ${uniqueClient} based on unbilled hours value of ₦${Math.round(totalUnbilledVal).toLocaleString()}.`,
+        actionText: 'Review Draft',
+        onAction: async () => {
+          const hoursTotal = unbilledEntries.reduce((s, e) => s + e.duration, 0);
+          const valTotal = unbilledEntries.reduce((s, e) => s + (e.duration / 3600) * e.rate, 0);
+          
+          await addInvoice(
+            uniqueClient, 
+            String(Math.round(valTotal)), 
+            undefined, 
+            [{ description: `Tracked work: ${(hoursTotal / 3600).toFixed(1)} hours`, qty: 1, unitPrice: Math.round(valTotal), total: Math.round(valTotal) }],
+            'Generated from unbilled time log.'
+          );
+          alert(`Draft invoice successfully created for ${uniqueClient}!`);
+        }
+      });
+    }
 
-  // Quick Action configuration
-  const quickActions = [
-    { label: 'Add Client', href: '/clients', icon: UserPlus, color: '#60a5fa' },
-    { label: 'Create Invoice', href: '/invoices', icon: Receipt, color: '#34d399' },
-    { label: 'New Task', href: '/tasks', icon: KanbanSquare, color: '#a78bfa' },
-    { label: 'Draft Proposal', href: '/proposals', icon: FilePlus, color: '#f472b6' },
-    { label: 'Log Expense', href: '/expenses', icon: Wallet, color: '#fbbf24' },
-    { label: 'Ask AI Core', href: '/agent', icon: Sparkles, color: '#22d3ee' },
-  ];
+    // Prompt 2: Overhead expenses checking
+    const highExpense = expenses.find(e => parseAmount(e.amount) > 100000);
+    if (highExpense) {
+      list.push({
+        text: `Expense warning: "${highExpense.name}" exceeded typical threshold (₦${parseAmount(highExpense.amount).toLocaleString()}).`
+      });
+    }
+
+    // Default suggestions
+    if (list.length === 0) {
+      list.push({
+        text: 'All operational parameters look nominal. Consider reviewing project pipelines for Q3.'
+      });
+    }
+
+    return list;
+  }, [timeEntries, expenses, addInvoice]);
 
   return (
     <div className={styles.container}>
-      
-      {/* Header */}
-      <header className={styles.header}>
+
+      {/* Header Greeting */}
+      <motion.header
+        className={styles.header}
+        initial={{ opacity: 0, y: -12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.45 }}
+      >
         <div>
-          <motion.h1 
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className={styles.title}
-          >
-            Welcome back, {userName}
-            <Sparkles size={24} className={styles.sparkleIcon} />
-          </motion.h1>
-          <p className={styles.subtitle}>Your agency dashboard is live. Monitor stats and take actions.</p>
+          <h1 className={styles.title}>{greetingText}</h1>
+          <p className={styles.subtitle}>Here is your operational overview for today.</p>
         </div>
         <div className={styles.statusBadge}>
-          <Zap size={14} style={{ color: '#10b981' }} />
-          Workspace Active
+          <Zap size={13} style={{ color: '#10b981' }} />
+          Active
         </div>
-      </header>
+      </motion.header>
 
-      {/* Getting Started Callout if 0 Clients */}
-      {clients.length === 0 && (
-        <div className={styles.onboardingCard}>
-          <div className={styles.onboardingLeft}>
-            <Sparkles size={28} className={styles.onboardingSparkle} />
-            <div>
-              <h3>Quick Start Onboarding Sequence</h3>
-              <p>Initialize your client node, Kanban task cards, and invoice parameters to sync the workspace dashboard.</p>
-            </div>
+      {/* KPI Card Grid (Outstanding, Revenue, Tasks, Hours) */}
+      <section className={styles.statsGrid}>
+        <KPICard label="Outstanding ₦" value={outstandingAmount > 0 ? outstandingAmount.toLocaleString() : '0'} delay={0.1} />
+        <KPICard label="Revenue ₦" value={totalInvoiced > 0 ? totalInvoiced.toLocaleString() : '0'} delay={0.15} />
+        <KPICard label="Active Tasks" value={String(activeTasksCount)} delay={0.2} />
+        <KPICard label="Billable Hours" value={String(totalBillableHours)} delay={0.25} />
+      </section>
+
+      {/* Bento Section: AI Insights & Recent Activity */}
+      <section className={styles.bentoSectionGrid}>
+        
+        {/* Aether AI Insights */}
+        <div className={styles.aiCardCol}>
+          <div className={styles.aiHeader}>
+            <Sparkles size={18} style={{ color: '#d97706' }} />
+            <h2 className={styles.aiTitle}>Aether AI Insights</h2>
           </div>
-          <Link href="/onboarding" className={styles.onboardingBtn}>
-            Configure Checklist <ArrowRight size={16} />
-          </Link>
-        </div>
-      )}
-
-      {/* Quick Actions Bar */}
-      <div className={styles.quickActionsSection}>
-        <h3 className={styles.cardTitle}>Quick Actions</h3>
-        <div className={styles.quickActionsGrid}>
-          {quickActions.map((act, i) => {
-            const Icon = act.icon;
-            return (
-              <Link key={i} href={act.href} className={styles.quickActionBtn}>
-                <div className={styles.quickIconBox} style={{ background: `${act.color}15`, color: act.color }}>
-                  <Icon size={18} />
-                </div>
-                <span>{act.label}</span>
-              </Link>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Stats Cards Row */}
-      <div className={styles.statsGrid}>
-        <StatCard icon={TrendingUp} label="Total Paid Revenue" value={`₦${totalInvoiced.toLocaleString()}`} delta={totalInvoiced > 0 ? "Active" : ""} color="green" />
-        <StatCard icon={Users} label="Active Clients" value={String(activeClientsCount)} delta={activeClientsCount > 0 ? `${activeClientsCount} total` : ""} color="blue" />
-        <StatCard icon={CheckCircle} label="Completed Tasks" value={`${completedTasksCount}/${totalTasksCount}`} delta={totalTasksCount > 0 ? `${Math.round((completedTasksCount/totalTasksCount)*100)}%` : ""} color="purple" />
-        <StatCard icon={Clock} label="Tracked Billable Hours" value={`${totalHours} hrs`} delta={timeEntries.length > 0 ? "Live" : ""} color="orange" />
-      </div>
-
-      {/* Main Content Grid */}
-      <div className={styles.mainGrid}>
-        <div className={styles.leftCol}>
-          {/* Revenue Overview chart block */}
-          <div className={styles.projectionCard}>
-            <h3 className={styles.cardTitle}>
-              <Target size={20} style={{ color: '#818cf8' }} />
-              Workspace Intelligence Feed
-            </h3>
-            <p className={styles.cardDesc}>Visualized neural activity showing client logs and system parameters.</p>
-            <div style={{ height: '300px' }}>
-              <VisualElement3D />
-            </div>
-          </div>
-
-          {/* Unified Activity Logs */}
-          <div className={styles.activityCard}>
-            <h3 className={styles.cardTitle}>Workspace Activity Feed</h3>
-            <div className={styles.activityList}>
-              {recentActivity.length > 0 ? (
-                recentActivity.map((activity: any, i) => (
-                  <div key={i} className={styles.activityItem}>
-                    <div className={styles.activityIcon}>
-                      <CheckCircle size={18} />
-                    </div>
-                    <div className={styles.activityInfo}>
-                      <div className={styles.activityTitle}>{activity.title}</div>
-                      <div className={styles.activityMeta}>{activity.time} • {activity.type}</div>
-                    </div>
-                    <div className={styles.activityValue} style={{ color: activity.amount === 0 ? '#fff' : activity.isPositive ? '#10b981' : '#f43f5e' }}>
-                      {activity.amount === 0 ? '' : activity.amount > 0 ? '+' : ''}
-                      {activity.amount === 0 ? 'Free' : `₦${Math.abs(activity.amount).toLocaleString()}`}
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div style={{ textAlign: 'center', padding: '2rem', opacity: 0.5, fontSize: '0.9rem' }}>
-                  No recent activities recorded. Log some time or create an invoice to populate the feed.
-                </div>
-              )}
-            </div>
+          <div className={styles.aiCardContentList}>
+            {aiSuggestions.map((sug, i) => (
+              <div key={i} className={styles.aiSuggestItem}>
+                <p className={styles.aiSuggestText}>{sug.text}</p>
+                {sug.actionText && sug.onAction && (
+                  <button onClick={sug.onAction} className={styles.aiSuggestBtn}>
+                    {sug.actionText}
+                  </button>
+                )}
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* Right side panel */}
-        <div className={styles.rightCol}>
-          <div className={styles.actionCard}>
-            <h3 className={styles.actionTitle}>Workspace Assistant</h3>
-            <p className={styles.actionDesc}>Ask our embedded Claude AI core to draft responses, explain code structures, or map plans.</p>
-            <Link href="/agent" className={styles.actionBtn}>
-              Consult AI <ArrowUpRight size={18} />
+        {/* Recent Activity */}
+        <div className={styles.recentActivityCol}>
+          <div className={styles.panelHeaderRow}>
+            <h2 className={styles.panelTitle}>Recent Activity</h2>
+            <Link href="/invoices" className={styles.panelHeaderLink}>
+              View All
             </Link>
-            <Sparkles size={120} style={{ position: 'absolute', bottom: '-40px', right: '-40px', opacity: 0.1, transform: 'rotate(15deg)' }} />
           </div>
-
-          <div className={styles.teamCard}>
-            <h3 className={styles.cardTitle}>Client Node Synchronization</h3>
-            <div className={styles.teamList}>
-              {clients.length > 0 ? (
-                clients.map((c) => (
-                  <div key={c.id} className={styles.teamMember}>
-                    <div className={styles.memberAvatar}>
-                      <div className={`${styles.statusIndicator} ${styles.online}`} />
+          <div className={styles.activityFeed}>
+            {recentActivity.length > 0 ? (
+              recentActivity.map((act, i) => {
+                const Icon = act.icon;
+                return (
+                  <div key={i} className={styles.feedRow}>
+                    <div className={styles.feedIconBox}>
+                      <Icon size={15} />
                     </div>
-                    <div>
-                      <div className={styles.memberName}>{c.name}</div>
-                      <div className={styles.memberRole}>{c.role} • {c.email}</div>
+                    <div className={styles.feedInfo}>
+                      <div className={styles.feedTitle}>{act.title}</div>
+                      <div className={styles.feedTime}>{act.time} &bull; {act.meta}</div>
                     </div>
+                    <span className={act.amount > 0 ? styles.feedValuePositive : styles.feedValueNegative}>
+                      {act.amount !== 0 ? (act.amount > 0 ? '+' : '-') + `₦${Math.abs(Math.round(act.amount)).toLocaleString()}` : ''}
+                    </span>
                   </div>
-                ))
-              ) : (
-                <div style={{ opacity: 0.5, fontSize: '0.85rem', padding: '1rem 0' }}>
-                  No active client nodes. Use the onboarding checklist or Add Client action.
-                </div>
-              )}
-            </div>
+                );
+              })
+            ) : (
+              <div className={styles.emptyNote}>No activity logged yet.</div>
+            )}
           </div>
         </div>
-      </div>
+
+      </section>
+
+      {/* Sales & Revenue Overview Chart */}
+      <section className={styles.chartSection}>
+        <div className={styles.chartHeader}>
+          <BarChart3 size={18} style={{ color: '#6366f1' }} />
+          <h3 className={styles.chartTitleText}>Sales &amp; Revenue Overview</h3>
+        </div>
+        <p className={styles.chartDescText}>Monthly breakdown of collects, expenses, and net profit margins.</p>
+        <div style={{ minHeight: '280px' }}>
+          <SalesRevenueChart />
+        </div>
+      </section>
+
     </div>
   );
 }

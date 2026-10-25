@@ -1,12 +1,12 @@
 import React from 'react';
 import styles from './TopBar.module.css';
-import { Search, Bell, Settings, Menu } from 'lucide-react';
+import { Search, Bell, Settings, Menu, Sun, Moon } from 'lucide-react';
 import Link from 'next/link';
 
 import { useData } from '@/context/DataContext';
 
 export function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
-  const { notifications } = useData();
+  const { notifications, theme, toggleTheme } = useData();
   const unreadCount = notifications.filter(n => !n.read).length;
 
   return (
@@ -26,6 +26,14 @@ export function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
       </div>
 
       <div className={styles.actions}>
+        <button
+          className={styles.iconButton}
+          onClick={toggleTheme}
+          title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+          aria-label="Toggle Theme"
+        >
+          {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+        </button>
         <Link href="/notifications" className={styles.iconButton} style={{ position: 'relative' }}>
           <Bell size={20} />
           {unreadCount > 0 && (

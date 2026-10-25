@@ -1,61 +1,145 @@
 :root {
-  /* Color Palette */
-  --bg-main: #050505;
-  --bg-surface: rgba(20, 20, 20, 0.7);
-  --bg-surface-hover: rgba(35, 35, 35, 0.8);
+  /* ─── Light Mode (Paper & Ink / Approacheable Luxury) ─── */
+  --bg-main: #faf9f8;                  /* Warm Off-White */
+  --bg-surface: #faf9f8;
+  --bg-surface-bright: #ffffff;
+  --bg-surface-dim: #dadad9;
+  --bg-surface-lowest: #ffffff;
+  --bg-surface-low: #f5f4f2;
+  --bg-surface-container: #eeeeed;
+  --bg-surface-high: #e8e7e5;
+  --bg-surface-highest: #e0dedc;
+  --bg-surface-card: #ffffff;
+  --bg-surface-glass: rgba(0, 0, 0, 0.03);
+  --bg-surface-glass-hover: rgba(0, 0, 0, 0.06);
 
-  --text-primary: #ffffff;
-  --text-secondary: #a0a0a0;
-
-  /* Neon Accents */
-  --accent-blue: #00f0ff;
-  --accent-purple: #8a2be2;
-  --accent-glow: 0 0 10px rgba(0, 240, 255, 0.5), 0 0 20px rgba(138, 43, 226, 0.3);
-
-  /* Borders & UI Elements */
-  --border-color: rgba(255, 255, 255, 0.08);
-  --border-radius-lg: 16px;
-  --border-radius-md: 12px;
-  --border-radius-sm: 8px;
+  --text-primary: #1a1c1e;             /* Crisp dark text */
+  --text-secondary: #5a5c64;           /* Readable muted text */
+  --text-muted: #82848c;
+  --text-inverse: #ffffff;
+  --foreground: #1a1c1e;
+  
+  /* Primary & Accents */
+  --accent-blue: #030612;              /* Heritage Indigo */
+  --accent-blue-btn: #030612;
+  --accent-blue-btn-text: #ffffff;
+  --accent-purple: #735c00;            /* Naira Gold (Dark) */
+  --accent-gold-light: #fed65b;        /* Naira Gold (Light Container) */
+  --accent-gold-on: #745c00;           /* On Naira Gold text */
+  
+  --border-color: #e2e0dc;             /* Soft clean border */
+  --surface-border: #e2e0dc;
+  --outline: #76777c;
+  --outline-variant: #c6c6cc;
+  --inverse-surface: #2f3130;
+  
+  /* System States */
+  --accent-success: #16a34a;
+  --accent-danger: #dc2626;
+  --accent-danger-container: #fee2e2;
+  --accent-danger-on: #991b1b;
+  --accent-warning: #d97706;
+  
+  /* Shadows & Depth */
+  --accent-glow: 0px 4px 20px rgba(26, 31, 44, 0.06);
+  --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 4px 12px rgba(0, 0, 0, 0.03);
+  --modal-shadow: 0 20px 45px rgba(0, 0, 0, 0.15);
+  
+  /* Radii */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
 
   /* Transitions */
   --transition-fast: 0.15s ease-in-out;
   --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-  /* Design system tokens used across components */
-  --surface-glass: rgba(20, 20, 30, 0.6);
-  --surface-glass-hover: rgba(30, 30, 45, 0.8);
-  --surface-border: rgba(255, 255, 255, 0.07);
-  --radius-lg: 16px;
-  --radius-md: 12px;
-  --radius-sm: 8px;
-  --radius-full: 9999px;
   --transition-normal: 0.25s ease;
-  --page-content-padding: 2rem;
+  
+  /* Spacing */
+  --page-content-padding: 2.5rem;
+
+  /* Logo Theme Variables */
+  --logo-text-gradient: linear-gradient(120deg, #030612 0%, #4f39a7 45%, #0056b3 75%, #9e006b 100%);
+  --logo-text-shadow: drop-shadow(0 0 6px rgba(3, 6, 18, 0.08));
+  --logo-sparkle-1: #030612;
+  --logo-sparkle-2: #7b5ef0;
+  --logo-sparkle-3: #f05eb7;
+  --logo-sparkle-opacity-1: 0.7;
+  --logo-sparkle-opacity-2: 0.6;
+  --logo-slogan-color: rgba(3, 6, 18, 0.65);
 }
 
-@media (max-width: 768px) {
-  :root {
-    --page-content-padding: 1rem 0.5rem;
-  }
+/* ─── Dark Mode Overrides ─── */
+.dark {
+  --bg-main: #030612;                  /* Heritage Indigo background */
+  --bg-surface: #030612;
+  --bg-surface-bright: #0c0f1d;
+  --bg-surface-dim: #070914;
+  --bg-surface-lowest: #070a18;
+  --bg-surface-low: #0a0d1e;
+  --bg-surface-container: #101428;
+  --bg-surface-high: #181d38;
+  --bg-surface-highest: #222748;
+  --bg-surface-card: #0a0e22;
+  --bg-surface-glass: rgba(255, 255, 255, 0.035);
+  --bg-surface-glass-hover: rgba(255, 255, 255, 0.08);
+
+  --text-primary: #ffffff;             /* Crisp white text */
+  --text-secondary: #9ea3b5;           /* Readable soft muted text */
+  --text-muted: #6b7280;
+  --text-inverse: #030612;
+  --foreground: #ffffff;
+
+  --accent-blue: #38bdf8;
+  --accent-blue-btn: #38bdf8;
+  --accent-blue-btn-text: #030612;
+  --accent-purple: #fed65b;            /* Naira Gold highlights */
+  --accent-gold-light: rgba(254, 214, 91, 0.15);
+  --accent-gold-on: #fed65b;
+  
+  --border-color: rgba(255, 255, 255, 0.08);
+  --surface-border: rgba(255, 255, 255, 0.08);
+  --outline: #8c8d96;
+  --outline-variant: #2d3356;
+  --inverse-surface: #faf9f8;
+  
+  --accent-glow: 0px 4px 25px rgba(0, 0, 0, 0.45);
+  --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  --modal-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+
+  /* Logo Theme Variables (Dark Mode) */
+  --logo-text-gradient: linear-gradient(120deg, #ffffff 0%, #c0aaff 40%, #7eb8ff 70%, #ff9de2 100%);
+  --logo-text-shadow: drop-shadow(0 0 10px rgba(160, 120, 255, 0.55));
+  --logo-sparkle-1: #ffffff;
+  --logo-sparkle-2: #c9b6ff;
+  --logo-sparkle-3: #ffb3e6;
+  --logo-sparkle-opacity-1: 0.5;
+  --logo-sparkle-opacity-2: 0.4;
+  --logo-slogan-color: rgba(180, 200, 255, 0.6);
+}
+
+/* Reset margins and paddings only on specific block layout elements */
+body, h1, h2, h3, h4, h5, h6, p, ul, ol, li, figure, figcaption, blockquote, dl, dd {
+  margin: 0;
+  padding: 0;
 }
 
 *, *::before, *::after {
   box-sizing: border-box;
-  padding: 0;
-  margin: 0;
 }
 
 html {
-  /* Prevent horizontal overflow globally */
   overflow-x: hidden;
   max-width: 100%;
+  scroll-behavior: smooth;
 }
 
 body {
   background-color: var(--bg-main);
   color: var(--text-primary);
-  font-family: var(--font-inter, var(--font-geist-sans), sans-serif);
+  font-family: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   min-height: 100vh;
   overflow-x: hidden;
   max-width: 100%;
@@ -63,17 +147,19 @@ body {
   position: relative;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
-/* Fluid typography scale */
-h1 { font-size: clamp(1.5rem, 5vw, 2.5rem); }
-h2 { font-size: clamp(1.2rem, 3.5vw, 2rem); }
-h3 { font-size: clamp(1rem, 2.5vw, 1.5rem); }
-h4 { font-size: clamp(0.85rem, 2vw, 1.1rem); }
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-primary);
+  font-weight: 700;
+}
 
 img, video, canvas, svg {
   max-width: 100%;
   height: auto;
+  display: block;
 }
 
 a {
@@ -81,42 +167,113 @@ a {
   text-decoration: none;
 }
 
-/* Prevent tables from blowing out layout */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  overflow-x: auto;
-  display: block;
-}
-
-/* Base Glassmorphism Utility Class */
-.glass-panel {
-  background: var(--bg-surface);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--border-color);
-  border-radius: var(--border-radius-lg);
-}
-
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--outline-variant);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.25);
+  background: var(--outline);
 }
 
-/* Responsive text truncation helper */
-.truncate {
+/* Helper styles for styling Naira Gold elements */
+.naira-text-gold {
+  color: var(--accent-purple);
+}
+
+.dark .naira-text-gold {
+  color: var(--accent-purple);
+}
+
+/* ─── Glow Card Hover Utility ────────────────────────────── */
+.glow-card {
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.25s ease;
+  will-change: transform, box-shadow;
+}
+
+.glow-card:hover {
+  transform: translateY(-3px) scale(1.012);
+  box-shadow: 0 10px 30px rgba(115, 92, 0, 0.12),
+              0 2px 8px rgba(0, 0, 0, 0.04),
+              0 0 0 1px rgba(115, 92, 0, 0.08);
+}
+
+.dark .glow-card:hover {
+  box-shadow: 0 10px 32px rgba(254, 214, 91, 0.12),
+              0 2px 8px rgba(0, 0, 0, 0.4),
+              0 0 0 1px rgba(254, 214, 91, 0.15);
+}
+
+/* Glow for dark & light cards */
+.glow-dark {
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.25s ease;
+}
+
+.glow-dark:hover {
+  transform: translateY(-3px) scale(1.012);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06),
+              0 0 0 1px rgba(0, 0, 0, 0.08);
+}
+
+.dark .glow-dark:hover {
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.15),
+              0 8px 32px rgba(0, 0, 0, 0.5),
+              0 0 20px rgba(254, 214, 91, 0.08);
+}
+
+/* ─── Scroll Reveal Animation ─────────────────────────────── */
+@keyframes revealUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes revealFade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ─── Progress Bar ─────────────────────────────────────────── */
+.progress-bar-track {
+  width: 100%;
+  height: 5px;
+  background: rgba(0, 0, 0, 0.07);
+  border-radius: 100px;
   overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+}
+
+.dark .progress-bar-track {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 100px;
+  background: linear-gradient(90deg, #10b981 0%, #34d399 100%);
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dark .progress-bar-fill {
+  background: linear-gradient(90deg, #fed65b 0%, #34d399 100%);
+}
+
+/* Print Styles */
+@media print {
+  .topActionsBar, .sidebar, .topbar, nav, button:not(.print-keep) {
+    display: none !important;
+  }
+  body, html {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
 }

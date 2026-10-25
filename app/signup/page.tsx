@@ -39,6 +39,21 @@ export default function SignupPage() {
       setError(error.message);
       setLoading(false);
     } else {
+      // Create client profile
+      try {
+        await fetch('/api/auth/setup-profile', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            company_name: fullName,
+            full_name: fullName,
+            primary_contact_email: email
+          })
+        });
+      } catch (profileError) {
+        console.error('Failed to create profile:', profileError);
+      }
+      
       setSuccess(true);
       setLoading(false);
     }
@@ -58,8 +73,18 @@ export default function SignupPage() {
           <div className={styles.iconWrapper}>
             <Sparkles size={32} />
           </div>
-          <h1 className={styles.title}>Create Account</h1>
-          <p className={styles.subtitle}>Join the Aether Intelligence Network</p>
+          <h1 className={styles.title}>Director Sign Up</h1>
+          <p className={styles.subtitle}>Initialize your agency workspace & billing core</p>
+          <div style={{
+            marginTop: '0.75rem',
+            padding: '0.5rem 0.75rem',
+            background: 'var(--bg-surface-low)',
+            borderRadius: '8px',
+            fontSize: '0.78rem',
+            color: 'var(--text-secondary)'
+          }}>
+            Client portal accounts are invitation-only from your agency director.
+          </div>
         </div>
 
         {success ? (

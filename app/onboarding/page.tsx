@@ -1,145 +1,348 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { ModulePage } from '@/components/Layout/ModulePage';
-import { CheckCircle2, Circle, ArrowRight, Sparkles, UserPlus, FilePlus, Bot, Shield, Check } from 'lucide-react';
-import { useData } from '@/context/DataContext';
-import Link from 'next/link';
+import React, { useState } from 'react';
 import styles from './onboarding.module.css';
+import { 
+  FileText, 
+  Wallet, 
+  ClipboardList, 
+  Video, 
+  Lightbulb, 
+  Code2, 
+  PenTool, 
+  ChevronRight, 
+  Plus, 
+  X,
+  CheckCircle2,
+  Settings2
+} from 'lucide-react';
 
-export default function OnboardingPage() {
-  const { clients, tasks, invoices } = useData();
-  const [aiTried, setAiTried] = useState(false);
-  const [billingDone, setBillingDone] = useState(false);
+interface ActiveOnboarding {
+  id: string;
+  client: string;
+  workflow: string;
+  progress: number;
+  waitingOn: string;
+}
 
-  // Load localStorage variables on client mount
-  useEffect(() => {
-    setAiTried(localStorage.getItem('aether_onboarding_ai_tried') === 'true');
-    setBillingDone(localStorage.getItem('aether_onboarding_billing_setup') === 'true');
-  }, []);
+const initialOnboardings: ActiveOnboarding[] = [
+  {
+    id: 'onb-1',
+    client: 'Zenith Holdings',
+    workflow: 'CREATIVE STRATEGY',
+    progress: 65,
+    waitingOn: 'Questionnaire'
+  },
+  {
+    id: 'onb-2',
+    client: 'Lumina Tech',
+    workflow: 'TECH AUDIT',
+    progress: 20,
+    waitingOn: 'Initial Payment'
+  }
+];
 
-  // Determine completions
-  const steps = [
+export default function ClientOnboardingPage() {
+  const [activeFlowTitle, setActiveFlowTitle] = useState('Active Flow: Strategy Kickoff');
+  const [onboardings, setOnboardings] = useState<ActiveOnboarding[]>(initialOnboardings);
+  const [showNewModal, setShowNewModal] = useState(false);
+  const [showWorkflowModal, setShowWorkflowModal] = useState(false);
+
+  // New Onboarding State
+  const [clientName, setClientName] = useState('');
+  const [selectedTemplate, setSelectedTemplate] = useState('Creative Strategy Kickoff');
+  const [waitingTask, setWaitingTask] = useState('Send NDA');
+
+  const templates = [
     {
-      id: 'step-client',
-      title: 'Add Your First Client',
-      desc: 'Populate your workspace by adding a client partner details.',
-      link: '/clients',
-      cta: 'Go to Clients',
-      completed: clients.length > 0,
-      icon: UserPlus,
+      id: 'tpl-1',
+      title: 'Creative Strategy Kickoff',
+      steps: '4 Steps • Est. 3 days',
+      icon: Lightbulb,
+      iconBg: '#e0e7ff',
+      iconColor: '#4f46e5',
+      nodes: ['Send NDA', 'Payment', 'Briefing', 'Kickoff Call']
     },
     {
-      id: 'step-task',
-      title: 'Create an Active Task',
-      desc: 'Set up an assignment on the Kanban board to track your workflow.',
-      link: '/tasks',
-      cta: 'Open Tasks Board',
-      completed: Object.keys(tasks).length > 0,
-      icon: FilePlus,
+      id: 'tpl-2',
+      title: 'Tech Audit Flow',
+      steps: '6 Steps • Est. 1 week',
+      icon: Code2,
+      iconBg: '#f3f4f6',
+      iconColor: '#374151',
+      nodes: ['NDA Sign', 'Repo Access', 'Env Audit', 'Architecture Review', 'Security Scan', 'Debrief']
     },
     {
-      id: 'step-invoice',
-      title: 'Draft a Client Invoice',
-      desc: 'Request payments in Naira native or international currencies.',
-      link: '/invoices',
-      cta: 'Create Invoice',
-      completed: invoices.length > 0,
-      icon: FilePlus,
-    },
-    {
-      id: 'step-ai',
-      title: 'Interact with Claude AI Core',
-      desc: 'Test your workspace agent to draft code, generate briefings, or ask questions.',
-      link: '/agent',
-      cta: 'Open AI Console',
-      completed: aiTried,
-      icon: Bot,
-    },
-    {
-      id: 'step-billing',
-      title: 'Configure Billing Plan',
-      desc: 'Activate a professional or enterprise tier to unlock unlimited clients and invoices.',
-      link: '/billing',
-      cta: 'Manage Plan',
-      completed: billingDone,
-      icon: Shield,
-    },
+      id: 'tpl-3',
+      title: 'Brand Identity Lite',
+      steps: '3 Steps • Est. 2 days',
+      icon: PenTool,
+      iconBg: '#f3f4f6',
+      iconColor: '#374151',
+      nodes: ['Deposit', 'Moodboard', 'Concept Review']
+    }
   ];
 
-  const completedCount = steps.filter(s => s.completed).length;
-  const percentComplete = Math.round((completedCount / steps.length) * 100);
+  const handleStartNewOnboarding = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!clientName.trim()) return;
+
+    const newOnb: ActiveOnboarding = {
+      id: `onb-${Date.now()}`,
+      client: clientName.trim(),
+      workflow: selectedTemplate.toUpperCase(),
+      progress: 10,
+      waitingOn: waitingTask
+    };
+
+    setOnboardings([newOnb, ...onboardings]);
+    setClientName('');
+    setShowNewModal(false);
+  };
+
+  const handleSelectTemplate = (tpl: typeof templates[0]) => {
+    setActiveFlowTitle(`Active Flow: ${tpl.title}`);
+  };
 
   return (
-    <ModulePage title="Workspace Onboarding" subtitle="Complete the setup checklist to activate your workspace nodes." icon={Sparkles}>
-      <div className={styles.container}>
+    <div className={styles.pageContainer}>
+      <div className={styles.contentWrapper}>
         
-        {/* Progress Card */}
-        <div className={styles.progressCard}>
-          <div className={styles.progressHeader}>
+        {/* Breadcrumb & Header */}
+        <header className={styles.headerSection}>
+          <div className={styles.categoryBreadcrumb}>
+            PROJECTS / WORKFLOWS
+          </div>
+          <div className={styles.titleRow}>
             <div>
-              <h3>Workspace Completion</h3>
-              <p className={styles.subtext}>Follow these steps to fully configure Aether OS for your agency.</p>
+              <h1 className={styles.pageTitle}>Client Onboarding</h1>
+              <p className={styles.pageSubtitle}>
+                Manage and automate the agency-side experience for incoming clients. Ensure a consistent, high-end touchpoint at every phase.
+              </p>
             </div>
-            <div className={styles.progressBadge}>{percentComplete}% Complete</div>
+            <button 
+              className={styles.newWorkflowBtn}
+              onClick={() => setShowWorkflowModal(true)}
+            >
+              <Plus size={16} /> NEW WORKFLOW
+            </button>
           </div>
-          <div className={styles.barContainer}>
-            <div className={styles.barFill} style={{ width: `${percentComplete}%` }} />
+        </header>
+
+        {/* Card 1: Active Flow */}
+        <div className={styles.flowCard}>
+          <div className={styles.flowHeader}>
+            <h2 className={styles.flowTitle}>{activeFlowTitle}</h2>
+            <button 
+              className={styles.editFlowBtn}
+              onClick={() => alert('Opening visual flow canvas editor...')}
+            >
+              Edit Flow
+            </button>
           </div>
-          <div className={styles.progressStats}>
-            <span>{completedCount} of {steps.length} tasks completed</span>
-            {completedCount === steps.length && (
-              <span className={styles.successMessage}>🎉 Workspace fully synchronized!</span>
-            )}
+
+          <div className={styles.stepperContainer}>
+            {/* Step 1 */}
+            <div className={styles.stepNode}>
+              <div className={`${styles.nodeCircle} ${styles.goldCircle}`}>
+                <FileText size={20} />
+              </div>
+              <span className={styles.nodeLabel}>Send NDA</span>
+            </div>
+
+            <div className={styles.nodeConnector} />
+
+            {/* Step 2 */}
+            <div className={styles.stepNode}>
+              <div className={`${styles.nodeCircle} ${styles.grayCircle}`}>
+                <Wallet size={20} />
+              </div>
+              <span className={styles.nodeLabel}>Payment</span>
+            </div>
+
+            <div className={styles.nodeConnector} />
+
+            {/* Step 3 */}
+            <div className={styles.stepNode}>
+              <div className={`${styles.nodeCircle} ${styles.grayCircle}`}>
+                <ClipboardList size={20} />
+              </div>
+              <span className={styles.nodeLabel}>Briefing</span>
+            </div>
+
+            <div className={styles.nodeConnector} />
+
+            {/* Step 4 */}
+            <div className={styles.stepNode}>
+              <div className={`${styles.nodeCircle} ${styles.grayCircle}`}>
+                <Video size={20} />
+              </div>
+              <span className={styles.nodeLabel}>Kickoff Call</span>
+            </div>
           </div>
         </div>
 
-        {/* Steps List */}
-        <div className={styles.stepsList}>
-          {steps.map((step, idx) => {
-            const Icon = step.icon;
-            return (
-              <div 
-                key={step.id} 
-                className={`${styles.stepRow} ${step.completed ? styles.stepCompleted : ''}`}
-              >
-                <div className={styles.stepIndicator}>
-                  {step.completed ? (
-                    <CheckCircle2 size={24} className={styles.completedIcon} />
-                  ) : (
-                    <div className={styles.circleNumber}>{idx + 1}</div>
-                  )}
+        {/* Card 2: Onboarding Templates */}
+        <div className={styles.templatesCard}>
+          <h2 className={styles.sectionHeading}>Onboarding Templates</h2>
+          <div className={styles.templatesList}>
+            {templates.map((tpl) => {
+              const Icon = tpl.icon;
+              return (
+                <div 
+                  key={tpl.id} 
+                  className={styles.templateRow}
+                  onClick={() => handleSelectTemplate(tpl)}
+                >
+                  <div 
+                    className={styles.templateIconBox}
+                    style={{ backgroundColor: tpl.iconBg, color: tpl.iconColor }}
+                  >
+                    <Icon size={20} />
+                  </div>
+                  <div className={styles.templateDetails}>
+                    <h3 className={styles.templateName}>{tpl.title}</h3>
+                    <span className={styles.templateSub}>{tpl.steps}</span>
+                  </div>
+                  <ChevronRight size={18} className={styles.templateChevron} />
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Card 3: Active Onboardings */}
+        <div className={styles.activeOnboardingsCard}>
+          <h2 className={styles.sectionHeading}>Active Onboardings</h2>
+
+          <div className={styles.onboardingsList}>
+            {onboardings.map((item) => (
+              <div key={item.id} className={styles.onboardingItem}>
+                <div className={styles.itemHeader}>
+                  <div className={styles.clientGroup}>
+                    <h3 className={styles.clientName}>{item.client}</h3>
+                    <span className={styles.workflowTag}>{item.workflow}</span>
+                  </div>
+                  <span className={`${styles.progressBadge} ${item.progress >= 50 ? styles.progressHigh : styles.progressLow}`}>
+                    {item.progress}% Complete
+                  </span>
                 </div>
 
-                <div className={styles.stepContent}>
-                  <div className={styles.stepLeft}>
-                    <div className={styles.stepIconBox}>
-                      <Icon size={20} className={styles.stepIcon} />
-                    </div>
-                    <div>
-                      <h4 className={styles.stepTitle}>{step.title}</h4>
-                      <p className={styles.stepDesc}>{step.desc}</p>
-                    </div>
-                  </div>
-                  
-                  <div className={styles.stepRight}>
-                    {step.completed ? (
-                      <span className={styles.doneLabel}>
-                        <Check size={14} /> Completed
-                      </span>
-                    ) : (
-                      <Link href={step.link} className={styles.actionBtn}>
-                        {step.cta} <ArrowRight size={14} />
-                      </Link>
-                    )}
-                  </div>
+                <div className={styles.progressBarWrapper}>
+                  <div 
+                    className={styles.progressBarFill} 
+                    style={{ width: `${item.progress}%` }} 
+                  />
+                </div>
+
+                <div className={styles.waitingNotice}>
+                  Waiting on: <strong>{item.waitingOn}</strong>
                 </div>
               </div>
-            );
-          })}
+            ))}
+
+            {/* Start New Dashed Button */}
+            <button 
+              className={styles.startNewDashedBtn}
+              onClick={() => setShowNewModal(true)}
+            >
+              <Plus size={16} /> Start New
+            </button>
+          </div>
         </div>
 
       </div>
-    </ModulePage>
+
+      {/* Start New Onboarding Modal */}
+      {showNewModal && (
+        <div className={styles.modalOverlay} onClick={() => setShowNewModal(false)}>
+          <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <div>
+                <h3 className={styles.modalTitle}>Launch Client Onboarding</h3>
+                <p className={styles.modalSub}>Initialize structured welcome pipeline for a new partner</p>
+              </div>
+              <button className={styles.closeBtn} onClick={() => setShowNewModal(false)}>
+                <X size={20} />
+              </button>
+            </div>
+
+            <form onSubmit={handleStartNewOnboarding} className={styles.modalForm}>
+              <div className={styles.formGroup}>
+                <label className={styles.fieldLabel}>Client Name / Company</label>
+                <input 
+                  type="text" 
+                  placeholder="e.g. Apex Global Media" 
+                  value={clientName}
+                  onChange={(e) => setClientName(e.target.value)}
+                  className={styles.textInput}
+                  required
+                />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label className={styles.fieldLabel}>Select Workflow Template</label>
+                <select 
+                  value={selectedTemplate}
+                  onChange={(e) => setSelectedTemplate(e.target.value)}
+                  className={styles.selectInput}
+                >
+                  {templates.map(t => (
+                    <option key={t.id} value={t.title}>{t.title} ({t.steps})</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className={styles.formGroup}>
+                <label className={styles.fieldLabel}>First Step Required</label>
+                <input 
+                  type="text" 
+                  placeholder="e.g. Mutual NDA Execution"
+                  value={waitingTask}
+                  onChange={(e) => setWaitingTask(e.target.value)}
+                  className={styles.textInput}
+                  required
+                />
+              </div>
+
+              <div className={styles.modalActions}>
+                <button type="button" className={styles.modalCancel} onClick={() => setShowNewModal(false)}>
+                  Cancel
+                </button>
+                <button type="submit" className={styles.modalSubmit}>
+                  Initialize Onboarding
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* New Custom Workflow Modal */}
+      {showWorkflowModal && (
+        <div className={styles.modalOverlay} onClick={() => setShowWorkflowModal(false)}>
+          <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <div>
+                <h3 className={styles.modalTitle}>Create New Workflow Template</h3>
+                <p className={styles.modalSub}>Define stages, notifications, and automatic triggers</p>
+              </div>
+              <button className={styles.closeBtn} onClick={() => setShowWorkflowModal(false)}>
+                <X size={20} />
+              </button>
+            </div>
+            <div style={{ padding: '1rem 0', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+              Standard modular workflow sequence activated. Custom triggers can be configured in Agency Settings.
+            </div>
+            <div className={styles.modalActions}>
+              <button className={styles.modalSubmit} onClick={() => setShowWorkflowModal(false)}>
+                Got It
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+    </div>
   );
 }

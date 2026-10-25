@@ -1,108 +1,682 @@
-.container {
+.pageContainer {
   width: 100%;
-  padding: var(--page-content-padding, 2rem);
+  min-height: 100%;
+  padding: 2.5rem 2rem 5rem;
+  background: var(--bg-main);
+  color: var(--text-primary);
+  display: flex;
+  justify-content: center;
 }
 
-.wrapper {
-  max-width: 800px;
-  margin: 0 auto;
+.contentWrapper {
+  width: 100%;
+  max-width: 680px;
   display: flex;
   flex-direction: column;
-  gap: 2.5rem;
+  gap: 2.25rem;
 }
 
-.sectionHeader {
+/* ─── Header ────────────────────────────────────────── */
+.headerSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.workspaceTag {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.pageTitle {
+  font-family: var(--font-playfair), Georgia, serif;
+  font-size: 2.35rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+.pageSubtitle {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+/* ─── Toast ─────────────────────────────────────────── */
+.toast {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  margin-bottom: 1.5rem;
+  background: #dcfce7;
+  border: 1px solid #bbf7d0;
+  color: #166534;
+  padding: 0.85rem 1.25rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.88rem;
+  animation: slideDown 0.3s ease;
 }
 
-.sectionIcon {
-  color: var(--accent-blue);
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Base Card Style ───────────────────────────────── */
+.card {
+  background: var(--bg-surface-bright);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 1.75rem;
+  box-shadow: var(--card-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 1.35rem;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.cardTitle {
+  font-family: var(--font-playfair), Georgia, serif;
+  font-size: 1.55rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.2rem;
+}
+
+.cardSubtitle {
+  font-size: 0.86rem;
+  color: var(--text-secondary);
+}
+
+.headerIcon {
+  color: var(--text-primary);
+}
+
+/* ─── Card 1: Team & Roles ──────────────────────────── */
+.inviteBtn {
   display: flex;
   align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1.15rem;
+  background: var(--text-primary);
+  color: var(--text-inverse);
+  border: none;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: opacity var(--transition-fast);
 }
 
-.sectionTitle {
-  font-size: 1.1rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
+.inviteBtn:hover {
+  opacity: 0.9;
 }
 
-.itemBox {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid var(--surface-border);
-  border-radius: 24px;
-  overflow: hidden;
+.teamTable {
+  width: 100%;
 }
 
-.settingItem {
-  padding: 1.25rem 1.5rem;
+.teamTableHeader {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.teamList {
+  display: flex;
+  flex-direction: column;
+}
+
+.teamRow {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 1.5rem;
-  border-bottom: 1px solid var(--surface-border);
-  transition: background 0.3s ease;
-  cursor: pointer;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border-color);
 }
 
-.settingItem:last-child {
+.teamRow:last-child {
   border-bottom: none;
+  padding-bottom: 0.25rem;
 }
 
-.settingItem:hover {
-  background: var(--surface-glass-hover);
+.memberCell {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
 }
 
-.itemLabel {
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.6);
-  white-space: nowrap;
+.avatarImg {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
-.itemValue {
-  font-size: 0.9rem;
-  font-weight: 600;
-  text-align: right;
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-  word-break: break-word;
-}
-
-.logoutBtn {
-  margin-top: 1rem;
-  padding: 1.25rem;
-  background: rgba(239, 68, 68, 0.1);
-  color: #ef4444;
-  border: 1px solid rgba(239, 68, 68, 0.2);
-  border-radius: 20px;
+.avatarInitials {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--bg-surface-high);
+  color: var(--text-secondary);
+  font-size: 0.8rem;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.75rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
 }
 
-.logoutBtn:hover {
-  background: rgba(239, 68, 68, 0.18);
-  border-color: rgba(239, 68, 68, 0.35);
+.memberName {
+  font-size: 0.94rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.emailCell {
+  font-size: 0.86rem;
+  color: var(--text-secondary);
+}
+
+/* ─── Card 2: Ledger Config ─────────────────────────── */
+.ledgerBoxes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.ledgerItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.15rem 1.25rem;
+  background: var(--bg-surface-low);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+}
+
+.primaryLedger {
+  border-left: 4px solid #735c00;
+}
+
+.ledgerItemLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.ledgerRoleTag {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.currencyName {
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.defaultBadge {
+  padding: 0.25rem 0.65rem;
+  background: #fef3c7;
+  color: #92400e;
+  border-radius: 9999px;
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+
+/* Toggle Switch */
+.toggleSwitch {
+  width: 44px;
+  height: 24px;
+  background: var(--outline-variant);
+  border-radius: 9999px;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  transition: background var(--transition-fast);
+  padding: 2px;
+}
+
+.toggleOn {
+  background: #2563eb;
+}
+
+.toggleKnob {
+  width: 20px;
+  height: 20px;
+  background: #ffffff;
+  border-radius: 50%;
+  transition: transform var(--transition-fast);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.toggleOn .toggleKnob {
+  transform: translateX(20px);
+}
+
+.ledgerNotice {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* ─── Card 3: Subscription ──────────────────────────── */
+.subscriptionCard {
+  background: #090c1a;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 1.75rem;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+.subHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.subTitle {
+  font-family: var(--font-playfair), Georgia, serif;
+  font-size: 1.55rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.proTierBadge {
+  padding: 0.3rem 0.75rem;
+  background: #f6c445;
+  color: #111827;
+  border-radius: 9999px;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.storageUsageRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  color: #94a3b8;
+}
+
+.storageValue {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.progressBarWrapper {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.progressGoldFill {
+  height: 100%;
+  background: #f6c445;
+  border-radius: 9999px;
+}
+
+.subActions {
+  margin-top: 0.5rem;
+}
+
+.billingHistoryBtn {
+  width: 100%;
+  padding: 0.75rem;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.billingHistoryBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #ffffff;
+}
+
+/* ─── Card 4: Aether AI Config ──────────────────────── */
+.aiHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.radioOptions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.radioBox {
+  display: flex;
+  gap: 1rem;
+  padding: 1.15rem;
+  background: var(--bg-surface-low);
+  border: 1.5px solid var(--border-color);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.radioSelected {
+  border-color: var(--text-primary);
+  background: var(--bg-surface-bright);
+}
+
+.radioBullet {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--outline);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.15rem;
+  flex-shrink: 0;
+}
+
+.bulletActive {
+  border-color: var(--text-primary);
+}
+
+.bulletInner {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--text-primary);
+}
+
+.radioText {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.radioTitle {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.radioDesc {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* Focus areas */
+.focusSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.focusHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.focusLabel {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.editFocusLink {
+  background: transparent;
+  border: none;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  cursor: pointer;
+}
+
+.chipsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.chipSelected {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.9rem;
+  background: var(--bg-surface-bright);
+  border: 1px solid var(--border-color);
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.chipSelected:hover {
+  border-color: var(--text-primary);
+}
+
+.chipAdd {
+  padding: 0.45rem 0.9rem;
+  background: transparent;
+  border: 1px dashed var(--border-color);
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.chipAdd:hover {
+  border-color: var(--text-primary);
+  color: var(--text-primary);
+}
+
+.saveSection {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+}
+
+.saveConfigBtn {
+  padding: 0.75rem 1.6rem;
+  background: var(--text-primary);
+  color: var(--text-inverse);
+  border: none;
+  border-radius: 8px;
+  font-size: 0.84rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.saveConfigBtn:hover {
+  opacity: 0.9;
   transform: translateY(-1px);
 }
 
+/* Logout */
+.logoutWrapper {
+  display: flex;
+  justify-content: center;
+  padding-top: 1rem;
+}
+
+.logoutBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  padding: 0.65rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.logoutBtn:hover {
+  color: #dc2626;
+  border-color: #dc2626;
+  background: #fee2e2;
+}
+
+/* ─── Modals ────────────────────────────────────────── */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 1.5rem;
+}
+
+.modalContent {
+  width: 100%;
+  max-width: 480px;
+  background: var(--bg-surface-bright);
+  border-radius: 16px;
+  border: 1px solid var(--border-color);
+  padding: 1.85rem;
+  box-shadow: var(--modal-shadow);
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+}
+
+.modalTitle {
+  font-family: var(--font-playfair), Georgia, serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.modalSub {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  margin-top: 0.2rem;
+}
+
+.closeBtn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.modalForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.fieldLabel {
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+}
+
+.textInput {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  background: var(--bg-surface-low);
+  color: var(--text-primary);
+  font-size: 0.92rem;
+  outline: none;
+}
+
+.textInput:focus {
+  border-color: var(--text-primary);
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.modalCancel {
+  padding: 0.65rem 1.25rem;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  border-radius: 8px;
+  font-size: 0.86rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.modalSubmit {
+  padding: 0.65rem 1.35rem;
+  background: var(--text-primary);
+  color: var(--text-inverse);
+  border: none;
+  border-radius: 8px;
+  font-size: 0.86rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ─── Responsive ────────────────────────────────────── */
 @media (max-width: 640px) {
-  .settingItem {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-    padding: 1.1rem 1.25rem;
-  }
-  
-  .itemValue {
-    text-align: left;
-    color: var(--accent-blue);
+  .pageContainer {
+    padding: 1.5rem 1rem 4rem;
   }
 }

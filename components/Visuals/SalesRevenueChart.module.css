@@ -1,0 +1,241 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.controlsRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.tabGroup {
+  display: flex;
+  background: var(--bg-surface-low);
+  border: 1px solid var(--border-color);
+  padding: 0.25rem;
+  border-radius: var(--radius-md);
+  gap: 0.25rem;
+}
+
+.tabBtn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.4rem 0.85rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.tabBtn:hover {
+  color: var(--text-primary);
+}
+
+.activeTab {
+  background: var(--bg-surface-lowest);
+  color: var(--text-primary);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+:global(.dark) .activeTab {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: var(--bg-surface-low);
+  border: 1px solid var(--border-color);
+  padding: 0.3rem 0.65rem;
+  border-radius: 100px;
+}
+
+/* ─── Chart Area ─── */
+.chartArea {
+  flex: 1;
+  min-height: 170px;
+  display: flex;
+  align-items: flex-end;
+  padding: 1rem 0 0.5rem;
+  position: relative;
+}
+
+.barsContainer {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.barColumn {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.barTrack {
+  width: 100%;
+  height: 100%;
+  max-width: 48px;
+  background: var(--bg-surface-low);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  display: flex;
+  align-items: flex-end;
+  position: relative;
+  overflow: visible;
+  cursor: pointer;
+}
+
+/* Tooltip */
+.barTooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: var(--inverse-surface);
+  color: var(--bg-main);
+  padding: 0.4rem 0.65rem;
+  border-radius: 8px;
+  font-size: 0.72rem;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  z-index: 10;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+:global(.dark) .barTooltip {
+  background: #1e243d;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.barTrack:hover .barTooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+.tooltipLabel {
+  font-size: 0.68rem;
+  opacity: 0.75;
+  margin-bottom: 0.1rem;
+}
+
+.tooltipVal {
+  font-weight: 700;
+  font-size: 0.82rem;
+}
+
+.tooltipSub {
+  font-size: 0.65rem;
+  opacity: 0.65;
+  margin-top: 0.1rem;
+}
+
+/* Fills */
+.barFill {
+  width: 100%;
+  border-radius: 6px;
+  transition: height 0.6s cubic-bezier(0.4, 0, 0.2, 1), filter 0.2s;
+  position: relative;
+}
+
+.barTrack:hover .barFill {
+  filter: brightness(1.15);
+}
+
+.revenueFill {
+  background: linear-gradient(180deg, #e9c349 0%, #735c00 100%);
+}
+
+:global(.dark) .revenueFill {
+  background: linear-gradient(180deg, #fed65b 0%, #d4a72c 100%);
+}
+
+.profitFill {
+  background: linear-gradient(180deg, #34d399 0%, #059669 100%);
+}
+
+.barCap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  border-radius: 6px 6px 0 0;
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.colLabel {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* ─── Footer ─── */
+.chartFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border-color);
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.footerItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.footerLabel {
+  font-size: 0.68rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.footerValue {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.footerLegend {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+
+.legendDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}

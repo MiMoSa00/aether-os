@@ -3,7 +3,23 @@
 import React from 'react';
 import { Logo } from '@/components/Logo/Logo';
 import styles from './Sidebar.module.css';
-import { LayoutDashboard, FolderKanban, FileText, Users, Bot, X, CreditCard, Shield, LogOut, TrendingUp, BarChart3, Clock, FilePlus, Wallet } from 'lucide-react';
+import { 
+  LayoutDashboard, 
+  FolderKanban, 
+  FileText, 
+  Users, 
+  Bot, 
+  X, 
+  CreditCard, 
+  Shield, 
+  LogOut, 
+  TrendingUp, 
+  BarChart3, 
+  Clock, 
+  FilePlus, 
+  Wallet,
+  Bell,
+} from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useData } from '@/context/DataContext';
@@ -19,6 +35,7 @@ const navItems = [
   { name: 'Time Tracking', href: '/time-tracking', icon: Clock },
   { name: 'Expenses', href: '/expenses', icon: Wallet },
   { name: 'Reports', href: '/reports', icon: BarChart3 },
+  { name: 'Activity Center', href: '/notifications', icon: Bell },
   { name: 'AI Agent', href: '/agent', icon: Bot },
 ];
 
@@ -104,7 +121,6 @@ export function Sidebar({ isOpen, onClose }: { isOpen?: boolean; onClose?: () =>
             <span className={styles.avatarInitials}>{initials}</span>
           </div>
           <div className={styles.userInfo}>
-            <span className={styles.userName}>{userName}</span>
             <span className={styles.userRole}>Agency Admin</span>
           </div>
         </div>

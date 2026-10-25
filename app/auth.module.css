@@ -9,6 +9,14 @@
   overflow: hidden;
 }
 
+@media (max-width: 480px) {
+  .authContainer {
+    padding: 1rem;
+    align-items: flex-start;
+    padding-top: 2rem;
+  }
+}
+
 .glowTop {
   position: absolute;
   top: -10%;
@@ -18,6 +26,7 @@
   background: rgba(37, 99, 235, 0.1);
   border-radius: 50%;
   filter: blur(120px);
+  pointer-events: none;
 }
 
 .glowBottom {
@@ -29,6 +38,7 @@
   background: rgba(168, 85, 247, 0.1);
   border-radius: 50%;
   filter: blur(120px);
+  pointer-events: none;
 }
 
 .authCard {
@@ -36,6 +46,7 @@
   max-width: 450px;
   background: rgba(255, 255, 255, 0.03);
   backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 2.5rem;
   border-radius: 32px;
@@ -44,12 +55,33 @@
   z-index: 10;
 }
 
+@media (max-width: 480px) {
+  .authCard {
+    padding: 2rem 1.5rem;
+    border-radius: 24px;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 360px) {
+  .authCard {
+    padding: 1.5rem 1.25rem;
+    border-radius: 20px;
+  }
+}
+
 .header {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
   margin-bottom: 2.5rem;
+}
+
+@media (max-width: 480px) {
+  .header {
+    margin-bottom: 2rem;
+  }
 }
 
 .iconWrapper {
@@ -62,7 +94,7 @@
 }
 
 .title {
-  font-size: 2rem;
+  font-size: clamp(1.6rem, 5vw, 2rem);
   font-weight: 800;
   color: white;
   margin-bottom: 0.5rem;
@@ -72,12 +104,25 @@
 .subtitle {
   font-size: 0.9rem;
   color: rgba(255, 255, 255, 0.5);
+  line-height: 1.5;
+}
+
+@media (max-width: 480px) {
+  .subtitle {
+    font-size: 0.85rem;
+  }
 }
 
 .form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.25rem;
+}
+
+@media (max-width: 480px) {
+  .form {
+    gap: 1rem;
+  }
 }
 
 .inputGroup {
@@ -105,6 +150,13 @@
   transition: all 0.2s ease;
 }
 
+@media (max-width: 480px) {
+  .inputWrapper {
+    padding: 0 1rem;
+    border-radius: 12px;
+  }
+}
+
 .inputWrapper:focus-within {
   border-color: #2563eb;
   background: rgba(255, 255, 255, 0.08);
@@ -130,6 +182,13 @@
   font-size: 0.95rem;
   font-family: inherit;
   min-width: 0;
+}
+
+@media (max-width: 480px) {
+  .input {
+    font-size: 0.9rem;
+    padding: 0.8rem 0;
+  }
 }
 
 .input::placeholder {
@@ -161,12 +220,13 @@
 }
 
 .submitBtn {
-  margin-top: 1rem;
+  margin-top: 0.75rem;
   padding: 1rem;
   background: #2563eb;
   color: white;
   border-radius: 14px;
   font-weight: 700;
+  font-size: 0.95rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -174,6 +234,16 @@
   transition: all 0.2s ease;
   box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
   cursor: pointer;
+  border: none;
+  width: 100%;
+}
+
+@media (max-width: 480px) {
+  .submitBtn {
+    padding: 0.9rem;
+    font-size: 0.9rem;
+    border-radius: 12px;
+  }
 }
 
 .submitBtn:hover {
@@ -195,6 +265,7 @@
   border-radius: 12px;
   font-size: 0.85rem;
   text-align: center;
+  line-height: 1.4;
 }
 
 .footer {
@@ -204,6 +275,13 @@
   text-align: center;
   font-size: 0.9rem;
   color: rgba(255, 255, 255, 0.5);
+}
+
+@media (max-width: 480px) {
+  .footer {
+    margin-top: 1.5rem;
+    font-size: 0.85rem;
+  }
 }
 
 .link {
@@ -221,6 +299,12 @@
   padding: 2rem 0;
 }
 
+@media (max-width: 480px) {
+  .successMessage {
+    padding: 1.5rem 0;
+  }
+}
+
 .successBadge {
   background: rgba(34, 197, 94, 0.15);
   border: 1px solid rgba(34, 197, 94, 0.3);
@@ -228,4 +312,11 @@
   padding: 1.5rem;
   border-radius: 20px;
   margin-bottom: 1.5rem;
+}
+
+@media (max-width: 480px) {
+  .successBadge {
+    padding: 1.25rem;
+    border-radius: 16px;
+  }
 }

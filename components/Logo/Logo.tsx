@@ -61,11 +61,11 @@ export function Logo({ href = '/', iconSize = 64, showSlogan = true, centered = 
                 fontWeight: 800,
                 fontStyle: 'italic',
                 letterSpacing: '-0.02em',
-                background: 'linear-gradient(120deg, #ffffff 0%, #c0aaff 40%, #7eb8ff 70%, #ff9de2 100%)',
+                backgroundImage: 'var(--logo-text-gradient)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
-                filter: 'drop-shadow(0 0 10px rgba(160, 120, 255, 0.55))',
+                filter: 'var(--logo-text-shadow)',
                 whiteSpace: 'nowrap',
               }}
             >
@@ -83,14 +83,14 @@ export function Logo({ href = '/', iconSize = 64, showSlogan = true, centered = 
             >
               <defs>
                 <linearGradient id="sparkleGrad" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stopColor="#ffffff" />
-                  <stop offset="50%" stopColor="#c9b6ff" />
-                  <stop offset="100%" stopColor="#ffb3e6" />
+                  <stop offset="0%" stopColor="var(--logo-sparkle-1)" />
+                  <stop offset="50%" stopColor="var(--logo-sparkle-2)" />
+                  <stop offset="100%" stopColor="var(--logo-sparkle-3)" />
                 </linearGradient>
               </defs>
               <path fill="url(#sparkleGrad)" d="M12 2l2.09 4.26L18.5 8l-4.41 1.74L12 14l-2.09-4.26L5.5 8l4.41-1.74L12 2z" />
-              <path fill="url(#sparkleGrad)" opacity={0.5} d="M19 15l1 2 2 1-2 1-1 2-1-2-2-1 2-1 1-2z" />
-              <path fill="url(#sparkleGrad)" opacity={0.4} d="M5 3l.7 1.3L7 5l-1.3.7L5 7l-.7-1.3L3 5l1.3-.7L5 3z" />
+              <path fill="url(#sparkleGrad)" style={{ opacity: 'var(--logo-sparkle-opacity-1)' }} d="M19 15l1 2 2 1-2 1-1 2-1-2-2-1 2-1 1-2z" />
+              <path fill="url(#sparkleGrad)" style={{ opacity: 'var(--logo-sparkle-opacity-2)' }} d="M5 3l.7 1.3L7 5l-1.3.7L5 7l-.7-1.3L3 5l1.3-.7L5 3z" />
             </motion.svg>
           </span>
         </div>
@@ -102,7 +102,7 @@ export function Logo({ href = '/', iconSize = 64, showSlogan = true, centered = 
               fontSize: 'clamp(0.48rem, 1vw, 0.6rem)',
               letterSpacing: '0.15em',
               textTransform: 'uppercase',
-              color: 'rgba(180, 200, 255, 0.6)',
+              color: 'var(--logo-slogan-color)',
               fontWeight: 600,
               whiteSpace: 'nowrap',
               paddingLeft: centered ? '0' : '4px',

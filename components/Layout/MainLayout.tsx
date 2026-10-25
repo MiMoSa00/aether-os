@@ -11,7 +11,7 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
 
-  const isPublicPage = pathname === '/' || pathname === '/login' || pathname === '/signup' || pathname?.startsWith('/proposals/view');
+  const isPublicPage = pathname === '/' || pathname === '/login' || pathname === '/signup' || pathname?.startsWith('/proposals/view') || pathname?.startsWith('/client-portal');
 
   // Close sidebar on route change
   React.useEffect(() => {

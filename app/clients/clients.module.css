@@ -1,6 +1,8 @@
 .container {
   width: 100%;
-  padding: var(--page-content-padding, 2rem);
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
 }
 
 .actionRow {
@@ -16,18 +18,18 @@
 }
 
 .clientCard {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid var(--surface-border);
-  border-radius: 24px;
+  background: var(--bg-surface-card);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
   padding: 1.5rem;
-  transition: all 0.3s ease;
+  box-shadow: var(--card-shadow);
+  transition: all 0.25s ease;
   min-width: 0;
   overflow: hidden;
 }
 
 .clientCard:hover {
-  background: var(--surface-glass-hover);
-  border-color: rgba(255, 255, 255, 0.15);
+  background: var(--bg-surface-high);
   transform: translateY(-2px);
 }
 
@@ -35,22 +37,29 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
   gap: 1rem;
 }
 
 .avatar {
-  width: 50px;
-  height: 50px;
-  background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
-  border-radius: 15px;
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #6366f1, #3b82f6);
+  border-radius: 14px;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 800;
+  font-size: 1.1rem;
 }
 
 .activeBadge {
-  padding: 0.25rem 0.75rem;
-  background: rgba(34, 197, 94, 0.1);
-  color: #22c55e;
+  padding: 0.25rem 0.65rem;
+  background: rgba(34, 197, 94, 0.12);
+  color: #16a34a;
+  border: 1px solid rgba(34, 197, 94, 0.25);
   border-radius: 100px;
   font-size: 0.7rem;
   font-weight: 700;
@@ -58,18 +67,19 @@
 }
 
 .clientName {
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   font-weight: 700;
-  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .clientRole {
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.5);
-  margin-bottom: 1.5rem;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  margin-bottom: 1.25rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -78,20 +88,21 @@
 .detailsList {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.65rem;
 }
 
 .detailItem {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.65rem;
   font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-secondary);
   min-width: 0;
 }
 
 .detailIcon {
   flex-shrink: 0;
+  color: var(--text-muted);
 }
 
 .detailText {
@@ -101,19 +112,21 @@
 }
 
 .formCard {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-surface-card);
   padding: 2rem;
-  border-radius: 24px;
+  border-radius: 20px;
   margin-bottom: 2.5rem;
-  border: 1px solid var(--surface-border);
-  max-width: 500px;
+  border: 1px solid var(--border-color);
+  max-width: 520px;
   width: 100%;
+  box-shadow: var(--card-shadow);
 }
 
 .formTitle {
-  margin-bottom: 1.5rem;
-  font-size: 1.2rem;
+  margin-bottom: 1.25rem;
+  font-size: 1.15rem;
   font-weight: 700;
+  color: var(--text-primary);
 }
 
 .formGrid {
@@ -124,42 +137,50 @@
 
 .formInput {
   width: 100%;
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid var(--surface-border);
-  color: white;
+  background: var(--bg-surface-low);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
   padding: 0.75rem;
   border-radius: 12px;
   outline: none;
-  font-size: 0.95rem;
+  font-size: 0.92rem;
+  font-family: inherit;
   transition: border-color var(--transition-fast);
 }
 
 .formInput:focus {
-  border-color: var(--accent-blue);
+  border-color: var(--accent-purple);
+  background: var(--bg-surface-lowest);
 }
 
 .formActions {
   display: flex;
   gap: 1rem;
-  margin-top: 1rem;
+  margin-top: 0.5rem;
 }
 
 .submitBtn {
   flex: 1;
   padding: 0.75rem;
-  background: var(--accent-blue);
-  color: #050505;
+  background: var(--accent-purple);
+  color: #fff;
   border: none;
   border-radius: 12px;
   font-weight: 700;
   cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.submitBtn:hover {
+  opacity: 0.92;
 }
 
 .cancelBtn {
   padding: 0.75rem 1.5rem;
   background: transparent;
-  color: rgba(255, 255, 255, 0.5);
-  border: none;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
   cursor: pointer;
 }
 
@@ -167,12 +188,12 @@
   grid-column: 1 / -1;
   text-align: center;
   padding: 4rem 1.5rem;
-  opacity: 0.3;
+  color: var(--text-secondary);
 }
 
 @media (max-width: 768px) {
   .container {
-    padding: var(--page-content-padding, 1rem 0.5rem);
+    padding: 1rem;
   }
 }
 
@@ -180,36 +201,4 @@
   .clientsGrid {
     grid-template-columns: 1fr;
   }
-}
-
-/* Extra Client Card statistics styling */
-.clientStatsRow {
-  display: flex;
-  justify-content: space-between;
-  background: rgba(255, 255, 255, 0.015);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  padding: 0.75rem 1rem;
-  margin-top: 1.25rem;
-  gap: 1rem;
-}
-
-.clientStat {
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-}
-
-.clientStatLabel {
-  font-size: 0.68rem;
-  color: rgba(255, 255, 255, 0.4);
-  text-transform: uppercase;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-}
-
-.clientStatVal {
-  font-size: 0.95rem;
-  font-weight: 850;
-  color: #fff;
 }

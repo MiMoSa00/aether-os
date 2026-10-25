@@ -1,65 +1,175 @@
+/* ─── Board Container ──────────────────────────────────────── */
 .board {
-  padding: 1rem 0;
+  padding: 0;
   overflow-x: auto;
+  width: 100%;
 }
 
+/* ─── Board Summary Bar ────────────────────────────────────── */
+.boardSummary {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 0.85rem 1.25rem;
+  background: var(--bg-surface-card);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  box-shadow: var(--card-shadow);
+}
+
+.summaryItem {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.summaryProgress {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-left: auto;
+  font-size: 0.82rem;
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.summaryProgressTrack {
+  width: 110px;
+  height: 6px;
+  background: var(--bg-surface-low);
+  border-radius: 100px;
+  overflow: hidden;
+}
+
+.summaryProgressFill {
+  height: 100%;
+  border-radius: 100px;
+  background: linear-gradient(90deg, #10b981, #34d399);
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ─── Columns Container ────────────────────────────────────── */
 .columnsContainer {
   display: flex;
-  gap: 1.5rem;
-  min-height: calc(100vh - 250px);
+  gap: 1.25rem;
+  min-height: calc(100vh - 300px);
+  align-items: flex-start;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .columnsContainer {
     flex-direction: column;
     align-items: stretch;
-    gap: 1rem;
+    gap: 1.25rem;
     min-height: auto;
   }
-  
+}
+
+/* ─── Column ───────────────────────────────────────────────── */
+.column {
+  background: var(--bg-surface-card);
+  border: 1px solid var(--border-color);
+  border-radius: 18px;
+  flex: 1;
+  min-width: 280px;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  padding: 1.2rem;
+  box-sizing: border-box;
+  box-shadow: var(--card-shadow);
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+@media (max-width: 900px) {
   .column {
-    width: 100% !important;
-    min-width: 0 !important;
-    max-width: 100% !important;
+    min-width: 0;
+    max-width: 100%;
+    width: 100%;
   }
 }
 
-.column {
-  background: var(--surface-glass);
-  border: 1px solid var(--surface-border);
-  border-radius: var(--radius-lg);
-  width: 320px;
-  min-width: 320px;
-  display: flex;
-  flex-direction: column;
-  padding: 1rem;
-  box-sizing: border-box;
+.columnOver {
+  background: var(--bg-surface-high);
+  border-color: var(--accent-purple);
 }
 
+.columnDone {
+  opacity: 0.75;
+}
+
+.columnDone:hover {
+  opacity: 1;
+}
+
+/* ─── Column Header ────────────────────────────────────────── */
 .columnHeader {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-  padding: 0 0.5rem;
+  align-items: flex-start;
+  margin-bottom: 0.6rem;
+}
+
+.columnHeaderLeft {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+}
+
+.columnEmoji {
+  font-size: 1.15rem;
+  line-height: 1;
+  margin-top: 2px;
 }
 
 .columnTitle {
-  font-weight: 600;
   font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.7);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: 0.01em;
+  line-height: 1.2;
+  margin-bottom: 0.15rem;
 }
 
 .taskCount {
-  background: rgba(255, 255, 255, 0.05);
-  padding: 0.2rem 0.6rem;
-  border-radius: var(--radius-full);
-  font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.72rem;
+  font-weight: 700;
 }
 
+.columnLine {
+  height: 3px;
+  border-radius: 100px;
+  margin-bottom: 1rem;
+  opacity: 0.8;
+}
+
+.addTaskBtn {
+  background: var(--bg-surface-low);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.addTaskBtn:hover {
+  background: var(--bg-surface-high);
+  color: var(--text-primary);
+  border-color: var(--accent-purple);
+}
+
+/* ─── Task List ─────────────────────────────────────────────── */
 .taskList {
   display: flex;
   flex-direction: column;
@@ -67,45 +177,293 @@
   flex: 1;
 }
 
+.emptyState {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 1.75rem 1rem;
+  border: 1.5px dashed var(--border-color);
+  border-radius: 12px;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.emptyAddBtn {
+  background: transparent;
+  border: none;
+  color: var(--accent-purple);
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-decoration: underline;
+  padding: 0;
+}
+
+/* ─── Task Card ─────────────────────────────────────────────── */
 .task {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid var(--surface-border);
-  border-radius: var(--radius-md);
+  background: var(--bg-surface-low);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
   padding: 1rem;
   cursor: grab;
-  transition: all var(--transition-fast);
   width: 100%;
   box-sizing: border-box;
+  position: relative;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
-.task:hover {
-  background: var(--surface-glass-hover);
-  border-color: rgba(255, 255, 255, 0.2);
-  transform: translateY(-2px);
+.task:active {
+  cursor: grabbing;
 }
 
-.taskContent {
-  font-size: 0.9rem;
-  margin-bottom: 0.75rem;
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-  word-break: break-word;
-}
-
-.taskFooter {
+/* ─── Task Top Bar ──────────────────────────────────────────── */
+.taskTopBar {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 0.65rem;
 }
 
-.priority {
+.taskActions {
+  display: flex;
+  gap: 0.3rem;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.task:hover .taskActions {
+  opacity: 1;
+}
+
+.taskActionBtn {
+  background: var(--bg-surface-card);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.taskActionBtn:hover {
+  background: var(--bg-surface-high);
+  color: var(--text-primary);
+}
+
+.taskDeleteBtn:hover {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #dc2626;
+}
+
+/* ─── Task Content ──────────────────────────────────────────── */
+.taskContent {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.4;
+  margin-bottom: 0.35rem;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.taskDesc {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+  margin-bottom: 0.75rem;
+  overflow-wrap: break-word;
+}
+
+/* ─── Progress Section ──────────────────────────────────────── */
+.progressSection {
+  margin-bottom: 0.75rem;
+}
+
+.progressInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.35rem;
+}
+
+.progressLabel {
   font-size: 0.7rem;
+  color: var(--text-secondary);
   font-weight: 600;
-  padding: 0.2rem 0.5rem;
-  border-radius: var(--radius-sm);
-  text-transform: uppercase;
 }
 
-.high { background: rgba(248, 113, 113, 0.1); color: #f87171; }
-.medium { background: rgba(251, 191, 36, 0.1); color: #fbbf24; }
-.low { background: rgba(74, 222, 128, 0.1); color: #4ade80; }
+.progressPct {
+  font-size: 0.72rem;
+  color: var(--text-primary);
+  font-weight: 800;
+}
+
+/* ─── Task Footer ───────────────────────────────────────────── */
+.taskFooter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.taskMeta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  background: var(--bg-surface-card);
+  padding: 0.2rem 0.55rem;
+  border-radius: 100px;
+  border: 1px solid var(--border-color);
+  font-weight: 500;
+}
+
+/* ─── Priority Badges ───────────────────────────────────────── */
+.priority {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.2rem 0.55rem;
+  border-radius: 100px;
+  white-space: nowrap;
+}
+
+.high   { background: rgba(239, 68, 68, 0.12); color: #dc2626; border: 1px solid rgba(239, 68, 68, 0.25); }
+.medium { background: rgba(245, 158, 11, 0.12);  color: #d97706; border: 1px solid rgba(245, 158, 11, 0.25); }
+.low    { background: rgba(34, 197, 94, 0.12);  color: #16a34a; border: 1px solid rgba(34, 197, 94, 0.25); }
+
+/* ─── Task Edit Form ────────────────────────────────────────── */
+.taskEditing {
+  background: var(--bg-surface-card);
+  border: 1px solid var(--accent-purple);
+  border-radius: 14px;
+  padding: 1.1rem;
+  width: 100%;
+  box-sizing: border-box;
+  box-shadow: var(--modal-shadow);
+}
+
+.editHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.editTitle {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.editCancelBtn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 0.2rem;
+  display: flex;
+}
+
+.editCancelBtn:hover { color: var(--text-primary); }
+
+.editField {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin-bottom: 0.65rem;
+}
+
+.editLabel {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.editInput,
+.editSelect,
+.editTextarea {
+  background: var(--bg-surface-low);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 0.82rem;
+  padding: 0.5rem 0.7rem;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.15s;
+  font-family: inherit;
+}
+
+.editInput:focus,
+.editSelect:focus,
+.editTextarea:focus {
+  border-color: var(--accent-purple);
+  background: var(--bg-surface-lowest);
+}
+
+.editTextarea {
+  resize: vertical;
+  min-height: 52px;
+}
+
+.editSelect option { background: var(--bg-surface-card); color: var(--text-primary); }
+
+.editRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.65rem;
+}
+
+.editRange {
+  width: 100%;
+  accent-color: var(--accent-purple);
+  cursor: pointer;
+}
+
+.editActions {
+  display: flex;
+  gap: 0.6rem;
+  justify-content: flex-end;
+  margin-top: 0.75rem;
+}
+
+.editCancelFullBtn {
+  padding: 0.45rem 0.85rem;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.editCancelFullBtn:hover { background: var(--bg-surface-low); color: var(--text-primary); }
+
+.editSaveBtn {
+  padding: 0.45rem 0.85rem;
+  background: var(--accent-purple);
+  border: none;
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  transition: opacity 0.15s;
+}
+
+.editSaveBtn:hover { opacity: 0.92; }

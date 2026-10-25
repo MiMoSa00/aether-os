@@ -2,20 +2,21 @@
 
 import React, { use } from 'react';
 import { useData } from '@/context/DataContext';
-import { CheckCircle2, XCircle, ArrowLeft, Calendar, ShieldCheck, Download, Printer } from 'lucide-react';
+import { CheckCircle2, XCircle, ArrowLeft, Calendar, ShieldCheck, Download, Printer, Share2 } from 'lucide-react';
 import Link from 'next/link';
 import styles from './view.module.css';
+
+import { generateAndDownloadProposalPDF } from '@/lib/generateProposalPdf';
 
 interface PageProps {
   params: Promise<{ id: string }> | { id: string };
 }
 
 export default function ProposalClientViewPage({ params }: PageProps) {
-  // Support Next.js 14/15 async params or sync params safely
   const resolvedParams = params instanceof Promise ? use(params) : params;
   const { id } = resolvedParams;
   
-  const { proposals, updateProposalStatus, user } = useData();
+  const { proposals, updateProposalStatus, user, addNotification } = useData();
   const proposal = proposals.find(p => p.id === id);
 
   if (!proposal) {
@@ -33,6 +34,7 @@ export default function ProposalClientViewPage({ params }: PageProps) {
 
   const handleAccept = () => {
     updateProposalStatus(proposal.id, 'Accepted');
+    addNotification('Proposal Accepted', `Client ${proposal.client} has accepted the proposal for "${proposal.title}".`, 'success');
     alert('Thank you! You have accepted this proposal. The agency has been notified.');
   };
 
@@ -40,11 +42,22 @@ export default function ProposalClientViewPage({ params }: PageProps) {
     const confirm = window.confirm('Are you sure you want to decline this proposal? You can discuss terms further with the agency.');
     if (confirm) {
       updateProposalStatus(proposal.id, 'Declined');
+      addNotification('Proposal Declined', `Client ${proposal.client} declined the proposal for "${proposal.title}".`, 'warning');
     }
   };
 
-  const handlePrint = () => {
-    window.print();
+  const handleDownloadPDF = () => {
+    generateAndDownloadProposalPDF({
+      id: proposal.id,
+      title: proposal.title,
+      client: proposal.client,
+      date: proposal.date,
+      status: proposal.status,
+      scope: proposal.scope,
+      deliverables: proposal.deliverables,
+      timeline: proposal.timeline,
+      price: proposal.price,
+    });
   };
 
   return (
@@ -58,12 +71,15 @@ export default function ProposalClientViewPage({ params }: PageProps) {
                 <ArrowLeft size={16} /> Back to Proposals
               </Link>
             ) : (
-              <div className={styles.brandLogo}>AETHER OS PORTAL</div>
+              <div className={styles.brandLogo}>AETHER OS CLIENT PORTAL</div>
             )}
           </div>
-          <div className={styles.barRight}>
-            <button className={styles.iconButton} onClick={handlePrint} title="Print / PDF">
-              <Printer size={16} /> Print
+          <div className={styles.barRight} style={{ display: 'flex', gap: '0.5rem' }}>
+            <button className={styles.iconButton} onClick={handleDownloadPDF} title="Download PDF document directly to your device">
+              <Download size={15} /> Download PDF
+            </button>
+            <button className={styles.iconButton} onClick={() => window.print()} title="Print Document">
+              <Printer size={15} /> Print
             </button>
           </div>
         </div>
@@ -110,10 +126,7 @@ export default function ProposalClientViewPage({ params }: PageProps) {
             <div className={`${styles.statusAlert} ${styles.alertDraft}`}>
               <div className={styles.alertText}>
                 <h4>Draft Mode (Internal View)</h4>
-                <p>This proposal is in Draft mode. Update its status to "Sent" to make it active for client approval.</p>
-              </div>
-              <div className={styles.alertActions}>
-                <button onClick={() => updateProposalStatus(proposal.id, 'Sent')} className={styles.acceptBtn}>Set to Sent</button>
+                <p>This proposal is in Draft mode. Use the Send button on the main proposals page to deliver it to the client.</p>
               </div>
             </div>
           )}
@@ -161,7 +174,7 @@ export default function ProposalClientViewPage({ params }: PageProps) {
 
           {proposal.scope && (
             <div className={styles.docSection}>
-              <h3 className={styles.sectionHeading}>1. Project Scope & Purpose</h3>
+              <h3 className={styles.sectionHeading}>1. Project Scope &amp; Purpose</h3>
               <p className={styles.bodyText}>{proposal.scope}</p>
             </div>
           )}
@@ -178,7 +191,7 @@ export default function ProposalClientViewPage({ params }: PageProps) {
           )}
 
           <div className={styles.docSection}>
-            <h3 className={styles.sectionHeading}>3. Budget & Schedule</h3>
+            <h3 className={styles.sectionHeading}>3. Budget &amp; Schedule</h3>
             <div className={styles.financialSummary}>
               <div className={styles.summaryItem}>
                 <span className={styles.summaryLabel}>Expected Delivery Timeline</span>
@@ -186,7 +199,7 @@ export default function ProposalClientViewPage({ params }: PageProps) {
               </div>
               <div className={styles.summaryItem}>
                 <span className={styles.summaryLabel}>Total Project Investment</span>
-                <span className={styles.summaryValue} style={{ color: '#22c55e' }}>{proposal.price}</span>
+                <span className={styles.summaryValue} style={{ color: '#10b981' }}>{proposal.price}</span>
               </div>
             </div>
           </div>
@@ -196,7 +209,7 @@ export default function ProposalClientViewPage({ params }: PageProps) {
               <div className={styles.sigLine} />
               <div className={styles.sigLabel}>
                 <strong>Aether Agency Representative</strong><br />
-                <span>Authorized via Workspace Cryptographic Token</span>
+                <span>Authorized via Workspace Token</span>
               </div>
             </div>
 

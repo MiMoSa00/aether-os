@@ -6,6 +6,10 @@ interface Task {
   id: string;
   content: string;
   priority: 'High' | 'Medium' | 'Low';
+  description?: string;
+  dueDate?: string;
+  assignee?: string;
+  progress?: number; // 0-100
 }
 
 interface Column {
@@ -26,8 +30,12 @@ interface Invoice {
   id: string;
   client: string;
   amount: string;
-  status: 'Paid' | 'Pending';
+  status: 'Paid' | 'Pending' | 'Overdue';
   date: string;
+  due_date?: string;
+  line_items?: Array<{ description: string; qty: number; unitPrice: number; total: number }>;
+  notes?: string;
+  paystack_reference?: string;
 }
 
 interface Notification {
@@ -65,7 +73,7 @@ interface Expense {
   id: string;
   name: string;
   amount: string;
-  category: 'Software' | 'Travel' | 'Equipment' | 'Marketing' | 'Other';
+  category: 'Software' | 'Travel' | 'Equipment' | 'Marketing' | 'Office Rent' | 'Other';
   date: string;
   client: string;
 }
@@ -81,10 +89,16 @@ interface DataContextType {
   expenses: Expense[];
   payments: any[];
   user: any;
-  addTask: (columnId: string, content: string, priority: 'High' | 'Medium' | 'Low') => void;
+  theme: 'light' | 'dark';
+  toggleTheme: () => void;
+  addTask: (columnId: string, content: string, priority: 'High' | 'Medium' | 'Low', description?: string, dueDate?: string, assignee?: string) => void;
+  deleteTask: (taskId: string) => void;
+  updateTask: (taskId: string, updates: Partial<Task>) => void;
   addClient: (name: string, role: string, email: string, phone: string) => void;
-  addInvoice: (client: string, amount: string) => void;
-  updateInvoiceStatus: (id: string, status: 'Paid' | 'Pending') => void;
+  addInvoice: (client: string, amount: string, due_date?: string, line_items?: any[], notes?: string) => Promise<void>;
+  updateInvoiceStatus: (id: string, status: 'Paid' | 'Pending' | 'Overdue') => Promise<void>;
+  deleteInvoice: (id: string) => Promise<void>;
+  verifyInvoicePayment: (invoiceId: string, reference: string) => Promise<boolean>;
   moveTask: (activeId: string, overId: string) => void;
   markNotificationRead: (id: string) => void;
   addNotification: (title: string, message: string, type: 'info' | 'success' | 'warning') => void;
@@ -117,6 +131,40 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   const [payments, setPayments] = useState<any[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
   const [user, setUser] = useState<any>(null);
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+
+  useEffect(() => {
+    const saved = localStorage.getItem('aether_theme') as 'light' | 'dark';
+    if (saved) {
+      setTheme(saved);
+      if (saved === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    } else {
+      // Check system preference
+      const isSystemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const defaultTheme = isSystemDark ? 'dark' : 'light';
+      setTheme(defaultTheme);
+      if (defaultTheme === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const next = theme === 'light' ? 'dark' : 'light';
+    setTheme(next);
+    localStorage.setItem('aether_theme', next);
+    if (next === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  };
 
   // Listen to auth changes to synchronize session globally without locks
   useEffect(() => {
@@ -168,7 +216,15 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         };
         
         taskData.forEach((t: any) => {
-          taskMap[t.id] = { id: t.id, content: t.content, priority: t.priority };
+          taskMap[t.id] = { 
+            id: t.id, 
+            content: t.content, 
+            priority: t.priority,
+            description: t.description || undefined,
+            dueDate: t.due_date || t.dueDate || undefined,
+            assignee: t.assignee || undefined,
+            progress: t.progress !== undefined ? t.progress : (t.status === 'done' ? 100 : t.status === 'in-progress' ? 50 : 0)
+          };
           if (newCols[t.status as keyof typeof newCols]) {
             newCols[t.status as keyof typeof newCols].taskIds.push(t.id);
           }
@@ -189,8 +245,18 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       // Fetch Invoices
       const { data: invoiceData } = await supabase.from('invoices').select('*').eq('user_id', supabaseUser.id);
       if (invoiceData) {
-        setInvoices(invoiceData);
-        localStorage.setItem('aether_invoices', JSON.stringify(invoiceData));
+        const today = new Date();
+        const updatedInvoices = invoiceData.map((inv: any) => {
+          if (inv.status === 'Pending' && inv.due_date) {
+            const due = new Date(inv.due_date);
+            if (!isNaN(due.getTime()) && due < today) {
+              return { ...inv, status: 'Overdue' };
+            }
+          }
+          return inv;
+        });
+        setInvoices(updatedInvoices);
+        localStorage.setItem('aether_invoices', JSON.stringify(updatedInvoices));
       }
 
       // Fetch Notifications
@@ -278,14 +344,14 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     await supabase.from('notifications').update({ read: true }).eq('id', id);
   };
 
-  const addTask = async (columnId: string, content: string, priority: 'High' | 'Medium' | 'Low') => {
+  const addTask = async (columnId: string, content: string, priority: 'High' | 'Medium' | 'Low', description?: string, dueDate?: string, assignee?: string) => {
     if (!user) return;
 
     const newTaskId = `task-${Date.now()}`;
-    const newTask = { id: newTaskId, content, priority, status: columnId, user_id: user.id };
+    const newTask = { id: newTaskId, content, priority, status: columnId, user_id: user.id, description, due_date: dueDate, assignee };
     
     setTasks(prev => {
-      const next = { ...prev, [newTaskId]: { id: newTaskId, content, priority } };
+      const next = { ...prev, [newTaskId]: { id: newTaskId, content, priority, description, dueDate, assignee, progress: 0 } };
       updateStorage('aether_tasks', next);
       return next;
     });
@@ -296,6 +362,41 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     });
 
     await supabase.from('tasks').insert([newTask]);
+  };
+
+  const deleteTask = async (taskId: string) => {
+    // Remove from columns
+    setColumns(prev => {
+      const next = { ...prev };
+      Object.keys(next).forEach(colId => {
+        next[colId] = { ...next[colId], taskIds: next[colId].taskIds.filter(id => id !== taskId) };
+      });
+      updateStorage('aether_cols', next);
+      return next;
+    });
+    // Remove from tasks
+    setTasks(prev => {
+      const next = { ...prev };
+      delete next[taskId];
+      updateStorage('aether_tasks', next);
+      return next;
+    });
+    try {
+      await supabase.from('tasks').delete().eq('id', taskId);
+    } catch {}
+  };
+
+  const updateTask = async (taskId: string, updates: Partial<Task>) => {
+    setTasks(prev => {
+      const next = { ...prev, [taskId]: { ...prev[taskId], ...updates } };
+      updateStorage('aether_tasks', next);
+      return next;
+    });
+    try {
+      const dbUpdates: Record<string, any> = { ...updates };
+      if (updates.dueDate !== undefined) { dbUpdates.due_date = updates.dueDate; delete dbUpdates.dueDate; }
+      await supabase.from('tasks').update(dbUpdates).eq('id', taskId);
+    } catch {}
   };
 
   const addClient = async (name: string, role: string, email: string, phone: string) => {
@@ -310,15 +411,21 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     await supabase.from('clients').insert([newClient]);
   };
 
-  const addInvoice = async (client: string, amount: string) => {
+  const addInvoice = async (client: string, amount: string, due_date?: string, line_items?: any[], notes?: string) => {
     if (!user) return;
+
+    const ref = `ref-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
 
     const newInvoice: Invoice = {
       id: `INV-${Math.floor(1000 + Math.random() * 9000)}`,
       client,
       amount: `₦${amount}`,
       status: 'Pending',
-      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+      due_date: due_date || new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+      line_items: line_items || [],
+      notes: notes || '',
+      paystack_reference: ref
     };
     
     setInvoices(prev => {
@@ -326,16 +433,66 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       updateStorage('aether_invoices', next);
       return next;
     });
-    await supabase.from('invoices').insert([{ ...newInvoice, user_id: user.id }]);
+    
+    // Add success notification
+    await addNotification(
+      'Invoice Generated',
+      `Invoice ${newInvoice.id} for ${client} of ₦${amount} has been successfully created.`,
+      'success'
+    );
+
+    try {
+      await supabase.from('invoices').insert([{ ...newInvoice, user_id: user.id }]);
+    } catch (e) {
+      console.error("Supabase insert invoice failed:", e);
+    }
   };
 
-  const updateInvoiceStatus = async (id: string, status: 'Paid' | 'Pending') => {
+  const updateInvoiceStatus = async (id: string, status: 'Paid' | 'Pending' | 'Overdue') => {
     setInvoices(prev => {
       const next = prev.map(inv => inv.id === id ? { ...inv, status } : inv);
       updateStorage('aether_invoices', next);
       return next;
     });
-    await supabase.from('invoices').update({ status }).eq('id', id);
+    try {
+      await supabase.from('invoices').update({ status }).eq('id', id);
+    } catch (e) {
+      console.error("Supabase update status failed:", e);
+    }
+  };
+
+  const deleteInvoice = async (id: string) => {
+    setInvoices(prev => {
+      const next = prev.filter(inv => inv.id !== id);
+      updateStorage('aether_invoices', next);
+      return next;
+    });
+    try {
+      await supabase.from('invoices').delete().eq('id', id);
+      await addNotification('Invoice Deleted', `Invoice ${id} has been deleted.`, 'info');
+    } catch (e) {
+      console.error("Supabase delete invoice failed:", e);
+    }
+  };
+
+  const verifyInvoicePayment = async (invoiceId: string, reference: string) => {
+    try {
+      const res = await fetch(`/api/payments/verify-invoice?reference=${reference}&invoice_id=${invoiceId}`);
+      const data = await res.json();
+      if (data.status === 'Paid') {
+        setInvoices(prev => {
+          const next = prev.map(inv => inv.id === invoiceId ? { ...inv, status: 'Paid' as const } : inv);
+          updateStorage('aether_invoices', next);
+          return next;
+        });
+        await addNotification('Payment Confirmed', `Invoice ${invoiceId} has been successfully paid via Paystack!`, 'success');
+        return true;
+      }
+      return false;
+    } catch (e) {
+      console.error("Verify invoice payment failed:", e);
+      return false;
+    }
   };
 
   const moveTask = async (activeId: string, overId: string) => {
@@ -383,7 +540,30 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     });
 
     if (newStatus) {
-      await supabase.from('tasks').update({ status: newStatus }).eq('id', activeId);
+      // Automatically adjust progress according to target column
+      let autoProgress = 0;
+      if (newStatus === 'in-progress') autoProgress = 50;
+      else if (newStatus === 'done') autoProgress = 100;
+      else if (newStatus === 'todo') autoProgress = 0;
+
+      setTasks(prev => {
+        if (!prev[activeId]) return prev;
+        const next = {
+          ...prev,
+          [activeId]: {
+            ...prev[activeId],
+            progress: autoProgress
+          }
+        };
+        updateStorage('aether_tasks', next);
+        return next;
+      });
+
+      try {
+        await supabase.from('tasks').update({ status: newStatus, progress: autoProgress }).eq('id', activeId);
+      } catch (e) {
+        console.error("Supabase move task failed:", e);
+      }
     }
   };
 
@@ -498,10 +678,16 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       expenses,
       payments,
       user,
-      addTask, 
+      theme,
+      toggleTheme,
+      addTask,
+      deleteTask,
+      updateTask,
       addClient, 
       addInvoice, 
       updateInvoiceStatus,
+      deleteInvoice,
+      verifyInvoicePayment,
       moveTask,
       markNotificationRead,
       addNotification,

@@ -239,3 +239,42 @@
   height: 8px;
   border-radius: 50%;
 }
+
+/* ─── Mobile tightening ─────────────────────────────────── */
+@media (max-width: 480px) {
+  .barsContainer {
+    gap: 0.4rem;
+  }
+
+  .barTrack {
+    max-width: 36px;
+    border-radius: 6px;
+  }
+
+  .colLabel {
+    font-size: 0.68rem;
+  }
+
+  .tabBtn {
+    font-size: 0.72rem;
+    padding: 0.35rem 0.65rem;
+  }
+
+  .badge {
+    font-size: 0.68rem;
+    padding: 0.25rem 0.55rem;
+  }
+
+  .footerValue {
+    font-size: 0.95rem;
+  }
+
+  .footerLegend {
+    font-size: 0.7rem;
+  }
+
+  .chartArea {
+    min-height: 150px;
+    padding: 0.75rem 0 0.5rem;
+  }
+}

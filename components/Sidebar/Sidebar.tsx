@@ -82,17 +82,8 @@ export function Sidebar({ isOpen, onClose }: { isOpen?: boolean; onClose?: () =>
         <Logo href="/dashboard" iconSize={48} />
         <button 
           onClick={onClose}
-          style={{ 
-            background: 'transparent', 
-            border: 'none', 
-            color: 'white', 
-            marginLeft: 'auto',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-          className={styles.mobileOnly}
+          className={`${styles.mobileOnly} ${styles.closeBtn}`}
+          aria-label="Close navigation menu"
         >
           <X size={24} />
         </button>
@@ -121,6 +112,7 @@ export function Sidebar({ isOpen, onClose }: { isOpen?: boolean; onClose?: () =>
             <span className={styles.avatarInitials}>{initials}</span>
           </div>
           <div className={styles.userInfo}>
+            <span className={styles.userName}>{userName}</span>
             <span className={styles.userRole}>Agency Admin</span>
           </div>
         </div>

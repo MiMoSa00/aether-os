@@ -11,16 +11,21 @@ export function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
 
   return (
     <header className={styles.topbar}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-        <button className={styles.menuButton} onClick={onMenuClick}>
+      <div className={styles.leftGroup}>
+        <button 
+          className={styles.menuButton} 
+          onClick={onMenuClick}
+          aria-label="Open navigation menu"
+        >
           <Menu size={24} />
         </button>
         <div className={styles.searchContainer}>
-          <Search size={18} color="rgba(255,255,255,0.5)" />
+          <Search size={18} className={styles.searchIcon} />
           <input 
             type="text" 
             placeholder="Search projects..." 
             className={styles.searchInput}
+            aria-label="Search projects"
           />
         </div>
       </div>
@@ -34,28 +39,19 @@ export function TopBar({ onMenuClick }: { onMenuClick?: () => void }) {
         >
           {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
         </button>
-        <Link href="/notifications" className={styles.iconButton} style={{ position: 'relative' }}>
+        <Link 
+          href="/notifications" 
+          className={styles.iconButton} 
+          aria-label={unreadCount > 0 ? `Notifications (${unreadCount} unread)` : 'Notifications'}
+        >
           <Bell size={20} />
           {unreadCount > 0 && (
-            <span style={{ 
-              position: 'absolute', 
-              bottom: '-2px', 
-              right: '-2px', 
-              background: '#ef4444', 
-              color: 'white', 
-              fontSize: '10px', 
-              fontWeight: 800, 
-              padding: '2px 5px', 
-              borderRadius: '100px',
-              border: '2px solid #0a0a0b',
-              minWidth: '18px',
-              textAlign: 'center'
-            }}>
-              {unreadCount}
+            <span className={styles.notifBadge}>
+              {unreadCount > 99 ? '99+' : unreadCount}
             </span>
           )}
         </Link>
-        <Link href="/settings" className={styles.iconButton}>
+        <Link href="/settings" className={styles.iconButton} aria-label="Settings">
           <Settings size={20} />
         </Link>
       </div>

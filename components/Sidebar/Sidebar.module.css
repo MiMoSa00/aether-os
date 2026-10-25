@@ -21,9 +21,18 @@
   .sidebar {
     transform: translateX(-100%);
   }
-  
+
   .sidebarOpen {
     transform: translateX(0);
+  }
+}
+
+/* Shrink sidebar on very small phones so it doesn't swallow the whole screen */
+@media (max-width: 380px) {
+  .sidebar {
+    width: 85vw;
+    max-width: 320px;
+    padding: 1.25rem 1rem 0;
   }
 }
 
@@ -40,6 +49,7 @@
   flex-shrink: 0;
 }
 
+/* Close button (shown only on mobile) */
 .mobileOnly {
   display: none !important;
 }
@@ -48,6 +58,25 @@
   .mobileOnly {
     display: flex !important;
   }
+}
+
+.closeBtn {
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  margin-left: auto;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  border-radius: var(--radius-md);
+  transition: background-color var(--transition-fast);
+}
+
+.closeBtn:hover {
+  background: var(--bg-surface-glass-hover);
 }
 
 .nav {
@@ -61,7 +90,8 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.75rem 1rem;
+  padding: 0.85rem 1rem;
+  min-height: 44px;
   border-radius: var(--radius-md);
   color: var(--text-secondary);
   transition: all var(--transition-fast);
@@ -109,9 +139,9 @@
 }
 
 .avatar {
-  width: 38px;
-  height: 38px;
-  min-width: 38px;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
   border-radius: 50%;
   background: linear-gradient(135deg, #6366f1, #3b82f6);
   box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
@@ -122,10 +152,10 @@
 }
 
 .avatarInitials {
-  font-size: 0.75rem;
+  font-size: 0.95rem;
   font-weight: 800;
   color: #fff;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.02em;
   line-height: 1;
   user-select: none;
   pointer-events: none;
@@ -136,6 +166,7 @@
   flex-direction: column;
   min-width: 0;
   overflow: hidden;
+  flex: 1;
 }
 
 .userName {
@@ -160,7 +191,8 @@
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  padding: 0.65rem 1rem;
+  padding: 0.75rem 1rem;
+  min-height: 44px;
   border-radius: var(--radius-md);
   background: rgba(239, 68, 68, 0.08);
   border: 1px solid rgba(239, 68, 68, 0.18);

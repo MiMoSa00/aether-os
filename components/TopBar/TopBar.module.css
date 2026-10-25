@@ -21,24 +21,40 @@
   }
 }
 
+/* Left group: menu button + search */
+.leftGroup {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-width: 0;
+  flex: 1;
+}
+
 .menuButton {
   display: none;
   background: transparent;
   border: none;
   color: var(--text-primary);
   cursor: pointer;
-  padding: 0.5rem;
-  border-radius: var(--radius-sm);
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  transition: background-color var(--transition-fast);
+}
+
+.menuButton:hover {
+  background: var(--bg-surface-glass-hover);
 }
 
 @media (max-width: 1024px) {
   .menuButton {
     display: flex;
-    align-items: center;
-    justify-content: center;
   }
 }
 
+/* Search */
 .searchContainer {
   display: flex;
   align-items: center;
@@ -47,6 +63,7 @@
   border-radius: var(--radius-full);
   padding: 0.45rem 1rem;
   width: 300px;
+  min-width: 0;
   transition: all var(--transition-fast);
   color: var(--text-secondary);
 }
@@ -68,6 +85,11 @@
   }
 }
 
+.searchIcon {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
 .searchInput {
   background: transparent;
   border: none;
@@ -75,6 +97,7 @@
   color: var(--text-primary);
   margin-left: 0.5rem;
   width: 100%;
+  min-width: 0;
   font-family: inherit;
   font-size: 0.85rem;
 }
@@ -83,10 +106,18 @@
   color: var(--text-muted);
 }
 
+/* Actions (right side) */
 .actions {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+
+@media (max-width: 480px) {
+  .actions {
+    gap: 0.15rem;
+  }
 }
 
 .iconButton {
@@ -94,17 +125,37 @@
   border: 1px solid transparent;
   color: var(--text-secondary);
   cursor: pointer;
-  padding: 0.5rem;
+  width: 44px;
+  height: 44px;
   border-radius: var(--radius-full);
   transition: all var(--transition-fast);
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
+  text-decoration: none;
 }
 
 .iconButton:hover {
   background: var(--bg-surface-glass-hover);
   color: var(--text-primary);
   border-color: var(--border-color);
+}
+
+/* Notification badge */
+.notifBadge {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  background: #ef4444;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 5px;
+  border-radius: 100px;
+  border: 2px solid var(--bg-main);
+  min-width: 18px;
+  text-align: center;
+  line-height: 1;
+  pointer-events: none;
 }

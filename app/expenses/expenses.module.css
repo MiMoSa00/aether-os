@@ -7,7 +7,21 @@
   margin: 0 auto;
 }
 
-/* ─── Hero Banner ───────────────────────────────────── */
+@media (max-width: 768px) {
+  .container {
+    padding: 1.25rem;
+    gap: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 1rem;
+    gap: 1rem;
+  }
+}
+
+/* ─── Hero Banner ──────────────────────────────────────── */
 .heroGrid {
   display: grid;
   grid-template-columns: 1.8fr 1fr;
@@ -31,6 +45,12 @@
   min-width: 0;
 }
 
+@media (max-width: 480px) {
+  .heroProfitCard {
+    padding: 1.5rem 1.25rem;
+  }
+}
+
 .heroBg {
   position: absolute;
   top: -20px;
@@ -42,6 +62,13 @@
   pointer-events: none;
   line-height: 1;
   user-select: none;
+}
+
+/* Hide the giant ₦ decoration on narrow screens — it overlaps the content */
+@media (max-width: 600px) {
+  .heroBg {
+    display: none;
+  }
 }
 
 .heroContent {
@@ -77,6 +104,15 @@
   border-top: 1px solid var(--border-color);
 }
 
+/* Stack hero row stats vertically on mobile to prevent label overlap */
+@media (max-width: 600px) {
+  .heroRow {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.9rem;
+  }
+}
+
 .heroStat {
   display: flex;
   flex-direction: column;
@@ -92,6 +128,8 @@
   text-transform: uppercase;
   letter-spacing: 0.04em;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .heroStatValue {
@@ -110,6 +148,13 @@
   flex-shrink: 0;
 }
 
+/* Hide the vertical separator when the row stacks */
+@media (max-width: 600px) {
+  .heroSeparator {
+    display: none;
+  }
+}
+
 .heroBadge {
   display: flex;
   align-items: center;
@@ -117,6 +162,13 @@
   padding: 0.3rem 0.65rem;
   border-radius: 100px;
   flex-shrink: 0;
+}
+
+/* Center the margin badge on its own line when stacked */
+@media (max-width: 600px) {
+  .heroBadge {
+    align-self: flex-start;
+  }
 }
 
 .quickStats {
@@ -200,6 +252,12 @@
   box-shadow: var(--card-shadow);
 }
 
+@media (max-width: 480px) {
+  .card {
+    padding: 1.25rem;
+  }
+}
+
 .cardTitle {
   font-size: 1.15rem;
   font-weight: 700;
@@ -257,6 +315,8 @@
   outline: none;
   font-family: inherit;
   transition: border-color 0.2s ease, background 0.2s ease;
+  min-width: 0;
+  width: 100%;
 }
 
 .input:focus, .select:focus {
@@ -323,22 +383,35 @@
   align-items: center;
   gap: 0.75rem;
   transition: background 0.2s ease;
+  min-width: 0;
 }
 
 .expenseRow:hover {
   background: var(--bg-surface-high);
 }
 
+/* Stack expense row vertically on tiny screens */
+@media (max-width: 480px) {
+  .expenseRow {
+    flex-wrap: wrap;
+    padding: 0.75rem;
+  }
+}
+
 .rowLeft {
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
+  min-width: 0;
+  flex: 1;
 }
 
 .expName {
   font-size: 0.95rem;
   font-weight: 600;
   color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .expMeta {
@@ -375,6 +448,7 @@
   display: flex;
   align-items: center;
   gap: 1rem;
+  flex-shrink: 0;
 }
 
 .expAmount {
@@ -388,12 +462,14 @@
   border: none;
   color: var(--text-muted);
   cursor: pointer;
-  padding: 0.25rem;
+  padding: 0.5rem;
   border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: color 0.2s ease;
+  min-width: 32px;
+  min-height: 32px;
 }
 
 .deleteBtn:hover {
@@ -417,17 +493,23 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 0.5rem;
 }
 
 .clientName {
   font-size: 0.9rem;
   font-weight: 600;
   color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
 }
 
 .marginPercent {
   font-size: 0.85rem;
   font-weight: 700;
+  flex-shrink: 0;
 }
 
 .profitSubRow {
@@ -435,6 +517,7 @@
   justify-content: space-between;
   font-size: 0.75rem;
   color: var(--text-secondary);
+  gap: 0.5rem;
 }
 
 .progressBar {

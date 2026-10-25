@@ -1,12 +1,12 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { Suspense, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Logo } from '@/components/Logo/Logo';
 import { ShieldCheck, Mail, Lock, ArrowRight, Eye, EyeOff, Building } from 'lucide-react';
 import Link from 'next/link';
 
-export default function ClientLoginPage() {
+function ClientLoginContent() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -242,5 +242,25 @@ export default function ClientLoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ClientLoginPage() {
+  return (
+    <Suspense fallback={
+      <div style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: 'var(--bg-main)',
+        color: 'var(--text-secondary)',
+        fontSize: '0.9rem'
+      }}>
+        Loading...
+      </div>
+    }>
+      <ClientLoginContent />
+    </Suspense>
   );
 }

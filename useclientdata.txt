@@ -1,0 +1,264 @@
+﻿import { useEffect, useState } from 'react';
+
+interface ClientProject {
+  id: string;
+  project_name: string;
+  description?: string;
+  status: string;
+  phase?: string;
+  progress_percentage: number;
+  start_date?: string;
+  end_date?: string;
+  project_deliverables?: any[];
+}
+
+interface ClientInvoice {
+  id: string;
+  invoice_number: string;
+  description?: string;
+  amount_ngn: number;
+  status: 'paid' | 'unpaid' | 'overdue';
+  due_date?: string;
+  paid_date?: string;
+  created_at: string;
+}
+
+interface ClientContract {
+  id: string;
+  contract_name: string;
+  contract_type?: string;
+  file_url?: string;
+  is_signed: boolean;
+  signed_date?: string;
+}
+
+interface ClientProfile {
+  company_name?: string;
+  company_logo_url?: string;
+  primary_contact_name?: string;
+  primary_contact_email?: string;
+  phone_number?: string;
+  industry?: string;
+  company_size?: string;
+  location?: string;
+  website?: string;
+  services_description?: string;
+}
+
+export function useClientProjects() {
+  const [projects, setProjects] = useState<ClientProject[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchProjects() {
+      try {
+        const res = await fetch('/api/client/projects');
+        if (!res.ok) throw new Error('Failed to fetch projects');
+        const data = await res.json();
+        setProjects(data || []);
+      } catch (err) {
+        setError(String(err));
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchProjects();
+  }, []);
+
+  return { projects, loading, error };
+}
+
+export function useClientInvoices() {
+  const [invoices, setInvoices] = useState<ClientInvoice[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchInvoices() {
+      try {
+        const res = await fetch('/api/client/invoices');
+        if (!res.ok) throw new Error('Failed to fetch invoices');
+        const data = await res.json();
+        setInvoices(data || []);
+      } catch (err) {
+        setError(String(err));
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchInvoices();
+  }, []);
+
+  const updateInvoice = async (invoice_id: string, status: string, paystack_reference?: string) => {
+    try {
+      const res = await fetch('/api/client/invoices', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ invoice_id, status, paystack_reference })
+      });
+      if (!res.ok) throw new Error('Failed to update invoice');
+      const updated = await res.json();
+      setInvoices(invoices.map(inv => inv.id === invoice_id ? updated[0] : inv));
+      return updated[0];
+    } catch (err) {
+      setError(String(err));
+      throw err;
+    }
+  };
+
+  return { invoices, loading, error, updateInvoice, setInvoices };
+}
+
+export function useClientContracts() {
+  const [contracts, setContracts] = useState<ClientContract[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchContracts() {
+      try {
+        const res = await fetch('/api/client/contracts');
+        if (!res.ok) throw new Error('Failed to fetch contracts');
+        const data = await res.json();
+        setContracts(data || []);
+      } catch (err) {
+        setError(String(err));
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchContracts();
+  }, []);
+
+  const signContract = async (contract_id: string) => {
+    try {
+      const res = await fetch('/api/client/contracts', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contract_id, is_signed: true })
+      });
+      if (!res.ok) throw new Error('Failed to sign contract');
+      const updated = await res.json();
+      setContracts(contracts.map(c => c.id === contract_id ? { ...c, is_signed: true, signed_date: new Date().toISOString() } : c));
+      return updated[0];
+    } catch (err) {
+      setError(String(err));
+      throw err;
+    }
+  };
+
+  return { contracts, loading, error, signContract };
+}
+
+export function useClientProfile() {
+  const [profile, setProfile] = useState<ClientProfile | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchProfile() {
+      try {
+        const res = await fetch('/api/client/profile');
+        if (!res.ok) throw new Error('Failed to fetch profile');
+        const data = await res.json();
+        setProfile(data || {});
+      } catch (err) {
+        setError(String(err));
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchProfile();
+  }, []);
+
+  const updateProfile = async (updates: ClientProfile) => {
+    try {
+      const res = await fetch('/api/client/profile', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updates)
+      });
+      if (!res.ok) throw new Error('Failed to update profile');
+      const updated = await res.json();
+      setProfile(updated[0] || updated);
+      return updated;
+    } catch (err) {
+      setError(String(err));
+      throw err;
+    }
+  };
+
+  return { profile, loading, error, updateProfile, setProfile };
+}
+
+export function usePaystackCheckout() {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const initializePayment = async (invoice_id: string, amount_ngn: number) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch('/api/client/payments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ invoice_id, amount_ngn })
+      });
+      if (!res.ok) throw new Error('Failed to initialize payment');
+      const data = await res.json();
+      return data;
+    } catch (err) {
+      const errorMsg = String(err);
+      setError(errorMsg);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { initializePayment, loading, error };
+}
+
+interface DirectorInvoice {
+  id: string;
+  client_name: string;
+  invoice_number: string;
+  description?: string;
+  amount_ngn: number;
+  status: 'unpaid' | 'paid' | 'overdue';
+  due_date: string;
+  created_at: string;
+}
+
+export function useDirectorInvoices() {
+  const [invoices, setInvoices] = useState<DirectorInvoice[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchInvoices = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch('/api/director/invoices');
+      if (!res.ok) throw new Error('Failed to fetch invoices');
+      const data = await res.json();
+      setInvoices(data.invoices || []);
+    } catch (err) {
+      const errorMsg = String(err);
+      setError(errorMsg);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchInvoices();
+  }, []);
+
+  return { invoices, loading, error, refetch: fetchInvoices };
+}

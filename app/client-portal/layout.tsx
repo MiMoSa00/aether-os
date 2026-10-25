@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { Suspense, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { 
@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 import styles from './client-portal-layout.module.css';
 
-export default function ClientPortalLayout({ children }: { children: React.ReactNode }) {
+function ClientPortalLayoutContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -104,7 +104,7 @@ export default function ClientPortalLayout({ children }: { children: React.React
         />
       )}
 
-      {/* ─── Main Content Area with Top Navbar ───────────── */}
+      {/* ─── Main Content Area with Top Navbar ─────────── */}
       <div className={styles.mainWrapper}>
         {/* Top Navbar */}
         <header className={styles.topbar}>
@@ -136,5 +136,25 @@ export default function ClientPortalLayout({ children }: { children: React.React
         </main>
       </div>
     </div>
+  );
+}
+
+export default function ClientPortalLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <Suspense fallback={
+      <div style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: 'var(--bg-main)',
+        color: 'var(--text-secondary)',
+        fontSize: '0.9rem'
+      }}>
+        Loading...
+      </div>
+    }>
+      <ClientPortalLayoutContent>{children}</ClientPortalLayoutContent>
+    </Suspense>
   );
 }

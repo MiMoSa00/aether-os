@@ -43,6 +43,12 @@ interface ClientProfile {
   location?: string;
   website?: string;
   services_description?: string;
+  billing_address?: string;
+  company_registration?: string;
+  tax_id?: string;
+  bank_name?: string;
+  bank_account_number?: string;
+  bank_sort_code?: string;
 }
 
 export function useClientProjects() {
